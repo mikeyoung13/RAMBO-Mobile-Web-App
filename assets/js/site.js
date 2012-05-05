@@ -135,9 +135,10 @@ function showCategory( urlObj, options )
     }
 }
 
-$(document).bind('pageinit',function() {
+$(document).bind('pagechange',function(event,data) {
+        console.log("pagechange event!!!");
         if (twitterData === null) {
-            alert("loading twitter data!");
+            //alert("loading twitter data!");
             getTwitter();
         }
     }
@@ -164,9 +165,6 @@ $(document).bind( "pagebeforechange", function( e, data ) {
             // have to do anything.
             e.preventDefault()
         } else if (u.hash.search(twitterPath) !== -1)  {
-            if (twitterData === null) {
-                getTwitter();
-            }
             showTwitter( u, data.options );
             e.preventDefault()
 
@@ -259,7 +257,7 @@ function showTwitter( urlObj, options )
 
         // Find the h1 element in our header and inject the name of
         // the category into it.
-        $header.find( "h1" ).html( "RAMNO - Twitter" );
+        $header.find( "h1" ).html( "RAMBO - Twitter" );
 
         // Inject the category items markup into the content element.
         $content.html( markup );
