@@ -60,6 +60,8 @@ var categoryData = {
     }
 };
 
+var template = null;
+
 // Load the data for a specific category, based on
 // the URL passed in. Generate markup for the items in the
 // category, inject it into an embedded page, and then make
@@ -134,6 +136,15 @@ function showCategory( urlObj, options )
         $.mobile.changePage( $page, options );
     }
 }
+
+$(document).ready(function() {
+    var source   = $("#twitter-result-template").html();
+    twitterTemplate = Handlebars.compile(source);
+    console.log("template compiled!");
+
+});
+
+
 
 $(document).bind('pagechange',function(event,data) {
         console.log("pagechange event!!!");
@@ -228,48 +239,24 @@ function getTwitter() {
     });
 }
 
+function getPageSelectorFromURL(urlObj) {
+    return urlObj.hash.replace(/\?.*$/, "");
+}
 function showTwitter( urlObj, options )
 {
 
     // The pages we use to display our content are already in
     // the DOM. The id of the page we are going to write our
     // content into is specified in the hash before the '?'.
-        pageSelector = urlObj.hash.replace( /\?.*$/, "" );
+        pageSelector = getPageSelectorFromURL(urlObj);
 
     if ( twitterData ) {
-        // Get the page we are going to dump our content into.
         var $page = $( pageSelector ),
-
-        // Get the header for the page.
             $header = $page.children( ":jqmData(role=header)" ),
-
-        // Get the content area element for the page.
             $content = $page.children( ":jqmData(role=content)" ),
 
-        // The markup we are going to inject into the content
-        // area of the page.
-            markup = "<ul data-role='listview' data-inset='true' data-filter='true'>";
-
-        // Generate a list item for each item in the category
-        // and add it to our markup.
-        for ( var i = 0; i < twitterData.length; i++ ) {
-            markup += "<li>";
-            //markup += "<li><p class='ui-li-aside ui-li-desc'>05/12 - 12:53PM</p><h1 class='ui-li-desc'>" + twitterData[i].text + "</h1>";
-            //markup += "<p class='ui-li-aside ui-li-desc'>Posted: " + "2 days ago" + "</p><br/>";
-            markup += "<p class='ui-li-desc'>" + twitterData[i].text + "</p>";
-            //Date.parse(twitterData[i].created_at).
-            var createdDate = new Date(twitterData[i].created_at);
-            markup += "<p class='ui-li-desc'><strong>" + createdDate.toLocaleDateString() +" - " + createdDate.toLocaleTimeString() + "</strong></p>";
-            markup += "</li>";
-        }
-
-        markup += "</ul>";
-
-        // Find the h1 element in our header and inject the name of
-        // the category into it.
+        markup = twitterTemplate({things:twitterData});
         $header.find( "h1" ).html( "Twitter Feed" );
-
-        // Inject the category items markup into the content element.
         $content.html( markup );
 
         // Pages are lazily enhanced. We call page() on the page

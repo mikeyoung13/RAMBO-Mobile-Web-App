@@ -7,7 +7,20 @@
     <link rel="stylesheet" type="text/css" href="assets/css/site.css">
     <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+    <script src="assets/js/handlebars-1.0.0.beta.6.js"></script>
     <script src="assets/js/site.js"></script>
+
+    <script id="twitter-result-template" type="text/x-handlebars-template">
+        <ul data-role='listview' data-inset='true' data-filter='true'>
+            {{#each things}}
+            <li>
+                <p class='ui-li-desc'>{{this.text}}</p>
+                <p class='ui-li-desc'><strong>{{this.created_at}}</strong></p>
+            </li>
+            {{/each}}
+        </ul>
+    </script>
+
 </head>
 <body>
 
