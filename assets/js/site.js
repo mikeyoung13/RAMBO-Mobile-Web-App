@@ -257,7 +257,9 @@ function showTwitter( urlObj, options )
             //markup += "<li><p class='ui-li-aside ui-li-desc'>05/12 - 12:53PM</p><h1 class='ui-li-desc'>" + twitterData[i].text + "</h1>";
             //markup += "<p class='ui-li-aside ui-li-desc'>Posted: " + "2 days ago" + "</p><br/>";
             markup += "<p class='ui-li-desc'>" + twitterData[i].text + "</p>";
-            markup += "<p class='ui-li-desc'><strong>" + twitterData[i].created_at + "</strong></p>";
+            //Date.parse(twitterData[i].created_at).
+            var createdDate = new Date(twitterData[i].created_at);
+            markup += "<p class='ui-li-desc'><strong>" + createdDate.toLocaleDateString() +" - " + createdDate.toLocaleTimeString() + "</strong></p>";
             markup += "</li>";
         }
 
