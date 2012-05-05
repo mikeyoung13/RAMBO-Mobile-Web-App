@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/site.css">
     <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
-    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="assets/js/site.js"></script>
 </head>
 <body>
 
@@ -20,12 +20,17 @@
     <div data-role="content">
         <img class="image-center" src="assets/images/RAMBO-logo-100.jpg" />
         <ul data-role="listview" data-inset="true">
-            <li><a href="#">RSS Feed</a></li>
-            <li><a href="#">Twitter Feed</a></li>
-            <li><a href="#">Calendar</a></li>
+            <li><a href="#category-items?category=animals">RSS Feed</a></li>
+            <li><a href="#category-items?category=colors">Twitter Feed</a></li>
+            <li><a href="#category-items?category=vehicles">Calendar</a></li>
         </ul>
     </div>
 
+</div>
+
+<div id="category-items" data-role="page">
+    <div data-role="header"><h1></h1></div>
+    <div data-role="content"></div>
 </div>
 
 </body>
