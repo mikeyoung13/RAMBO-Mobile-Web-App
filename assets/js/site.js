@@ -138,6 +138,7 @@ function showCategory( urlObj, options )
 $(document).bind('pagechange',function(event,data) {
         console.log("pagechange event!!!");
         if (twitterData === null) {
+            //$.mobile.pageloading();
             //alert("loading twitter data!");
             getTwitter();
         }
@@ -192,7 +193,7 @@ function getTwitter() {
         type: 'GET',
 
         // the type of data we expect back
-        dataType: 'jsonp',
+        dataType: 'json',
 
         // code to run if the request succeeds;
         // the response is passed to the function
@@ -201,6 +202,7 @@ function getTwitter() {
             //print(Object.keys(json));
 
             twitterData = json;
+            //$.mobile.pageLoading(true);
 
             for (var i=0; i<json.length; i++) {
                 var tweet = json[i];
@@ -246,13 +248,18 @@ function showTwitter( urlObj, options )
 
         // The markup we are going to inject into the content
         // area of the page.
-            markup = "<p>RAMBO Twitter Feed</p><ul data-role='listview' data-inset='true'>";
+            markup = "<p>RAMBO Twitter Feed</p><ul data-role='listview' data-inset='true' data-filter='true'>";
 
         // Generate a list item for each item in the category
         // and add it to our markup.
         for ( var i = 0; i < twitterData.length; i++ ) {
-            markup += "<li>" + twitterData[i].text + "</li>";
+            markup += "<li>";
+            //markup += "<li><p class='ui-li-aside ui-li-desc'>05/12 - 12:53PM</p><h1 class='ui-li-desc'>" + twitterData[i].text + "</h1>";
+            markup += "<h1 class='ui-li-desc'>" + twitterData[i].text + "</h1>";
+            //markup +=  twitterData[i].postedAgo;
+            markup += "</li>";
         }
+
         markup += "</ul>";
 
         // Find the h1 element in our header and inject the name of
