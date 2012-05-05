@@ -1,0 +1,12 @@
+.ui-headerXXX{
+    background-image:url(../images/header-bg.png);
+    background-position:0 0px;
+    background-repeat:repeat;
+    height:40px;
+}
+
+.image-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
