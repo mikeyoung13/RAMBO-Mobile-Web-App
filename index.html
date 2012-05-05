@@ -23,14 +23,46 @@
             <li><a href="#category-items?category=animals">RSS Feed</a></li>
             <li><a href="#category-items?category=colors">Twitter Feed</a></li>
             <li><a href="#category-items?category=vehicles">Calendar</a></li>
+            <li><a href="#test-page1">Test Page 1 - reverse</a></li>
+            <li><a href="#test-page2">Test Page 2 - rel</a></li>
         </ul>
     </div>
 
 </div>
 
-<div id="category-items" data-role="page">
-    <div data-role="header"><h1></h1></div>
+<div id="category-items" data-role="page" data-add-back-btn="true">
+    <div data-role="header" data-rel="back"><h1></h1></div>
     <div data-role="content"></div>
+</div>
+
+<div data-role="page" id="test-page1">
+    <div data-role="header" data-rel="back">
+        <a href="index.html" data-icon="back" data-direction="reverse">Back</a>
+        <h1>Test Page 1</h1>
+    </div>
+
+    <div data-role="content">
+        <ul data-role="listview" data-inset="true">
+            <li><a href="#">Item #1</a></li>
+            <li><a href="#">Item #2</a></li>
+            <li><a href="#">Item #3</a></li>
+        </ul>
+    </div>
+</div>
+
+<div data-role="page" id="test-page2">
+    <div data-role="header" data-rel="back">
+        <a href="index2.html" data-icon="back" data-rel="back">Back</a>
+        <h1>Test Page 2</h1>
+    </div>
+
+    <div data-role="content">
+        <ul data-role="listview" data-inset="true">
+            <li><a href="#">Item #1</a></li>
+            <li><a href="#">Item #2</a></li>
+            <li><a href="#">Item #3</a></li>
+        </ul>
+    </div>
 </div>
 
 </body>
