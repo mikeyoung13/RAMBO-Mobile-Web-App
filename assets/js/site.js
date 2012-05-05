@@ -248,15 +248,16 @@ function showTwitter( urlObj, options )
 
         // The markup we are going to inject into the content
         // area of the page.
-            markup = "<p>RAMBO Twitter Feed</p><ul data-role='listview' data-inset='true' data-filter='true'>";
+            markup = "<ul data-role='listview' data-inset='true' data-filter='true'>";
 
         // Generate a list item for each item in the category
         // and add it to our markup.
         for ( var i = 0; i < twitterData.length; i++ ) {
             markup += "<li>";
             //markup += "<li><p class='ui-li-aside ui-li-desc'>05/12 - 12:53PM</p><h1 class='ui-li-desc'>" + twitterData[i].text + "</h1>";
-            markup += "<h1 class='ui-li-desc'>" + twitterData[i].text + "</h1>";
-            //markup +=  twitterData[i].postedAgo;
+            //markup += "<p class='ui-li-aside ui-li-desc'>Posted: " + "2 days ago" + "</p><br/>";
+            markup += "<p class='ui-li-desc'>" + twitterData[i].text + "</p>";
+            markup += "<p class='ui-li-desc'><strong>" + twitterData[i].created_at + "</strong></p>";
             markup += "</li>";
         }
 
@@ -264,7 +265,7 @@ function showTwitter( urlObj, options )
 
         // Find the h1 element in our header and inject the name of
         // the category into it.
-        $header.find( "h1" ).html( "RAMBO - Twitter" );
+        $header.find( "h1" ).html( "Twitter Feed" );
 
         // Inject the category items markup into the content element.
         $content.html( markup );
