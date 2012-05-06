@@ -137,6 +137,50 @@ function showCategory( urlObj, options )
     }
 }
 
+function getFormattedDate(date) {
+    console.log("Date to string",date.toDateString());
+    var dateArray = date.toDateString().split(" ");
+    dateArray.pop();
+    return dateArray.join(" ");
+}
+
+function getFormattedTime(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var postFix = "am";
+    if (hours >= 12) {
+        postFix = "pm";
+    }
+    if (hours > 12) {
+        hours-=12;
+    }
+
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
+    return hours + ":" + minutes + postFix;
+}
+
+function generateEventFormattedDates(events) {
+    for (var i = 0; i < events.length; i++) {
+        var event = events[i];
+        if (event.start.date) {
+            // Safari requires the full date
+            event.formattedDate = getFormattedDate(new Date(event.start.date +"T00:00:00-04:00"));
+        } else if (event.start.dateTime) {
+            var startDT = new Date(event.start.dateTime);
+            var endDT = new Date(event.end.dateTime);
+
+            var startDate = getFormattedDate(startDT);
+            var startTime = getFormattedTime(startDT);
+            var endTime = getFormattedTime(endDT);
+
+            event.formattedDate = startDate + " " + startTime + " - " + endTime;
+
+        }
+    }
+}
+
 $(document).ready(function() {
 
     twitterTemplate = Handlebars.compile($("#twitter-result-template").html());
@@ -277,47 +321,12 @@ function getGoogleCal() {
             orderBy: "startTime"
         },
 
-        // whether this is a POST or GET request
         type: 'GET',
-
-        // the type of data we expect back
         dataType: 'jsonp',
-
-        // code to run if the request succeeds;
-        // the response is passed to the function
         success: function(json) {
-
             calendarData = json;
-
-            //console.log(Object.keys(json));
-            var items = json.items;
-            for (var i = 0; i < items.length; i++) {
-                var event = items[i];
-                console.log(event.summary);
-                if (event.start.dateTime) {
-                    var startDate = new Date(Date.parse(event.start.dateTime));
-                    var endDate = new Date(Date.parse(event.end.dateTime));
-
-                    var dateString = startDate.getFullYear()+":"+ startDate.getMonth() + startDate.getDay();
-                    console.log(dateString);
-                    console.log("start: "+startDate.toDateString() + " "+ startDate.toTimeString());
-                    console.log("end: "+endDate.toDateString() + " "+ endDate.toTimeString());
-                } else {
-                    console.log("date: "+event.start.date);
-                }
-
-                if (event.description) {
-                    console.log("Details: "+event.description);
-                }
-                if (event.location) {
-                    console.log("Location: "+event.location);
-                }
-                console.log(" * * * * * * * * ");
-            }
-            //console.log(items);
-            //console.log(json.items.summary);
-            //$('<h1/>').text(json.items).appendTo('body');
-            //$('<div class="content "/>').html(json.items).appendTo('body');
+            generateEventFormattedDates(json.items);
+            console.log(JSON.stringify(json, null, '  '));
         },
 
         // code to run if the request fails;
