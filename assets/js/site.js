@@ -1,4 +1,5 @@
 var twitterData = null;
+var calendarData = null;
 var categoryData = {
     animals: {
         name: "Animals",
@@ -59,6 +60,7 @@ var categoryData = {
     }
 };
 var twitterTemplate = null;
+var calendarTemplate = null;
 
 // Load the data for a specific category, based on
 // the URL passed in. Generate markup for the items in the
@@ -136,9 +138,9 @@ function showCategory( urlObj, options )
 }
 
 $(document).ready(function() {
-    var source   = $("#twitter-result-template").html();
-    twitterTemplate = Handlebars.compile(source);
 
+    twitterTemplate = Handlebars.compile($("#twitter-result-template").html());
+    calendarTemplate = Handlebars.compile($("#calendar-result-template").html());
 
     Handlebars.registerHelper('dateformat', function(dateString) {
         var date = new Date(dateString);
@@ -161,6 +163,11 @@ $(document).bind('pagechange',function(event,data) {
             //alert("loading twitter data!");
             getTwitter();
         }
+        if (calendarData === null) {
+            //$.mobile.pageloading();
+            //alert("loading twitter data!");
+            getGoogleCal();
+        }
     }
 );
 
@@ -174,7 +181,8 @@ $(document).bind( "pagebeforechange", function( e, data ) {
         // category.
         var u = $.mobile.path.parseUrl( data.toPage ),
             categoryPath = /^#category-item/,
-            twitterPath = /^#twitter/;
+            twitterPath = /^#twitter/,
+            calendarPath = /^#calendar/;
         if ( u.hash.search(categoryPath) !== -1 ) {
             // We're being asked to display the items for a specific category.
             // Call our internal method that builds the content for the category
@@ -186,6 +194,10 @@ $(document).bind( "pagebeforechange", function( e, data ) {
             e.preventDefault()
         } else if (u.hash.search(twitterPath) !== -1)  {
             showTwitter( u, data.options );
+            e.preventDefault()
+
+        } else if (u.hash.search(calendarPath) !== -1)  {
+            showCalendar( u, data.options );
             e.preventDefault()
 
         }
@@ -247,6 +259,81 @@ function getTwitter() {
     });
 }
 
+function getGoogleCal() {
+
+    var now = (new Date()).toISOString();
+
+    $.ajax({
+        // the URL for the request
+        url: 'https://www.googleapis.com/calendar/v3/calendars/96msjdsgp3tcs3jv8kegvd9rhc@group.calendar.google.com/events',
+
+        // the data to send
+        // (will be converted to a query string)
+        data: {
+            fields: "items(description, end, location, start, summary)",
+            singleEvents: true,
+            timeMin: now,
+            key: "AIzaSyAZEASvv4Go1qssuljASB76T1HQPg_GgW8",
+            orderBy: "startTime"
+        },
+
+        // whether this is a POST or GET request
+        type: 'GET',
+
+        // the type of data we expect back
+        dataType: 'jsonp',
+
+        // code to run if the request succeeds;
+        // the response is passed to the function
+        success: function(json) {
+
+            calendarData = json;
+
+            //console.log(Object.keys(json));
+            var items = json.items;
+            for (var i = 0; i < items.length; i++) {
+                var event = items[i];
+                console.log(event.summary);
+                if (event.start.dateTime) {
+                    var startDate = new Date(Date.parse(event.start.dateTime));
+                    var endDate = new Date(Date.parse(event.end.dateTime));
+
+                    var dateString = startDate.getFullYear()+":"+ startDate.getMonth() + startDate.getDay();
+                    console.log(dateString);
+                    console.log("start: "+startDate.toDateString() + " "+ startDate.toTimeString());
+                    console.log("end: "+endDate.toDateString() + " "+ endDate.toTimeString());
+                } else {
+                    console.log("date: "+event.start.date);
+                }
+
+                if (event.description) {
+                    console.log("Details: "+event.description);
+                }
+                if (event.location) {
+                    console.log("Location: "+event.location);
+                }
+                console.log(" * * * * * * * * ");
+            }
+            //console.log(items);
+            //console.log(json.items.summary);
+            //$('<h1/>').text(json.items).appendTo('body');
+            //$('<div class="content "/>').html(json.items).appendTo('body');
+        },
+
+        // code to run if the request fails;
+        // the raw request and status codes are
+        // passed to the function
+        error: function(xhr, status) {
+            alert('Sorry, there was a problem!');
+        },
+
+        // code to run regardless of success or failure
+        complete: function(xhr, status) {
+            console.log("request is complete ");
+        }
+    });
+}
+
 function getPageSelectorFromURL(urlObj) {
     // The pages we use to display our content are already in
     // the DOM. The id of the page we are going to write our
@@ -287,6 +374,22 @@ function showTwitter( urlObj, options )
         $header.find( "h1" ).html( "Twitter Feed" );
         $content.html( markup );
         processJQMListView($page, $content, options, urlObj);
+
+
+}
+
+function showCalendar( urlObj, options )
+{
+    pageSelector = getPageSelectorFromURL(urlObj);
+
+
+    var $page = $( pageSelector ),
+        $header = $page.children( ":jqmData(role=header)" ),
+        $content = $page.children( ":jqmData(role=content)" ),
+        markup = calendarTemplate({events:calendarData.items});
+    $header.find( "h1" ).html( "RAMBO Events" );
+    $content.html( markup );
+    processJQMListView($page, $content, options, urlObj);
 
 
 }
