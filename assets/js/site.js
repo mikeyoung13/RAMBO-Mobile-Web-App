@@ -208,7 +208,7 @@ function generateEventFormattedDates(events) {
             var startTime = getFormattedTime(startDT);
             var endTime = getFormattedTime(endDT);
 
-            event.formattedDate = startDate + " " + startTime + " - " + endTime;
+            event.formattedDate = startDate + ", " + startTime + " - " + endTime;
 
         }
     }
@@ -414,7 +414,7 @@ function showTwitter( urlObj, options )
         $header = $page.children( ":jqmData(role=header)" ),
         $content = $page.children( ":jqmData(role=content)" ),
         markup = twitterTemplate({things:twitterData});
-        $header.find( "h1" ).html( "Twitter Feed" );
+        $header.find( "h1" ).html( "RAMBO - Tweets" );
         $content.html( markup );
         processJQMListView($page, $content, options, urlObj);
 
@@ -430,7 +430,7 @@ function showCalendar( urlObj, options )
         $header = $page.children( ":jqmData(role=header)" ),
         $content = $page.children( ":jqmData(role=content)" ),
         markup = calendarTemplate({events:calendarData.items});
-    $header.find( "h1" ).html( "RAMBO Events" );
+    $header.find( "h1" ).html( "RAMBO - Calendar" );
     $content.html( markup );
     processJQMListView($page, $content, options, urlObj);
 

@@ -26,9 +26,13 @@
             {{#each events}}
             <li>
                 <p class='ui-li-desc'>{{this.summary}}</p>
-                <p class='ui-li-desc'>{{this.formattedDate}}</p>
-                <p class='ui-li-desc'>{{this.description}}</p>
-                <p class='ui-li-desc'>{{this.location}}</p>
+                <p class='ui-li-desc'><strong>{{this.formattedDate}}</strong></p>
+                {{#if this.location}}
+                    <p class='ui-li-desc'>Location: {{this.location}}</p>
+                {{/if}}
+                {{#if this.description}}
+                    <p class='ui-li-desc'>Description: {{this.description}}</p>
+                {{/if}}
             </li>
             {{/each}}
         </ul>
