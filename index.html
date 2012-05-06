@@ -15,7 +15,7 @@
             {{#each things}}
             <li>
                 <p class='ui-li-desc'>{{this.text}}</p>
-                <p class='ui-li-desc'><strong>{{dateformat this.created_at}}</strong></p>
+                <p class='ui-li-desc'><strong>{{timeAgo this.created_at}}</strong></p>
             </li>
             {{/each}}
         </ul>

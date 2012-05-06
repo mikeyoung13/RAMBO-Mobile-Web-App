@@ -62,6 +62,8 @@ var categoryData = {
 var twitterTemplate = null;
 var calendarTemplate = null;
 
+//twitterData = [{"created_at":"Sun May 6 14:48:28 +0000 2012","text":"Good MTB weather people!1"},{"created_at":"Sun May 6 10:30:28 +0000 2012","text":"Good MTB weather people!2"},{"created_at":"Sun May 6 07:30:28 +0000 2012","text":"Good MTB weather people!3"}];
+
 // Load the data for a specific category, based on
 // the URL passed in. Generate markup for the items in the
 // category, inject it into an embedded page, and then make
@@ -161,6 +163,37 @@ function getFormattedTime(date) {
     return hours + ":" + minutes + postFix;
 }
 
+function getTimeAgoVerbiage(msec, msecPerPeriod, periodName) {
+    var numPeriods = msec / msecPerPeriod;
+    var roundedPeriods = Math.round(numPeriods);
+    if (roundedPeriods < 2) {
+        return "1 "+periodName+" ago";
+    } else {
+        return roundedPeriods+" "+periodName+"s ago";
+    }
+}
+
+function getTweetTime(now, oldDate) {
+
+    var MINUTE_MSEC = 60000;
+    var HOUR_MSEC = 3600000;
+    var DAY_MSEC = 86400000;
+    var WEEK_MSEC = 604800000;
+
+    var msec = now - oldDate;
+
+    if (msec < HOUR_MSEC) {
+        return getTimeAgoVerbiage(msec,MINUTE_MSEC,"minute");
+    } else if (msec <= DAY_MSEC) {
+        return getTimeAgoVerbiage(msec,HOUR_MSEC,"hour");
+    } else if (msec <= WEEK_MSEC) {
+        return getTimeAgoVerbiage(msec,DAY_MSEC,"day");
+    }else {
+        return getFormattedDate(new Date(oldDate));
+    }
+
+}
+
 function generateEventFormattedDates(events) {
     for (var i = 0; i < events.length; i++) {
         var event = events[i];
@@ -186,9 +219,10 @@ $(document).ready(function() {
     twitterTemplate = Handlebars.compile($("#twitter-result-template").html());
     calendarTemplate = Handlebars.compile($("#calendar-result-template").html());
 
-    Handlebars.registerHelper('dateformat', function(dateString) {
+    Handlebars.registerHelper('timeAgo', function(dateString) {
         var date = new Date(dateString);
-        return date.toLocaleDateString() +" - " + date.toLocaleTimeString();
+        var msec = date.getTime();
+        return getTweetTime(Date.now(), msec);
     });
 
 
