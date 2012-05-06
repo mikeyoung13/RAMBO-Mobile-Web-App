@@ -302,7 +302,7 @@ function getTwitter() {
         type: 'GET',
 
         // the type of data we expect back
-        dataType: 'json',
+        dataType: 'jsonp',
 
         // code to run if the request succeeds;
         // the response is passed to the function
