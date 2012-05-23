@@ -309,6 +309,8 @@ function showRSS( urlObj, options )
         markup = rssTemplate({feedItems:rssFeedData.query.results.entry});
     $header.find( "h1" ).html( "RAMBO - Website News" );
     $content.html( markup );
+    var images = $(".rsscontent img");
+    images.remove();
     processJQMListView($page, $content, options, urlObj);
 
 

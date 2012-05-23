@@ -42,7 +42,13 @@
         <ul data-role='listview' data-inset='true' data-filter='true'>
             {{#each feedItems}}
             <li>
-                <a href="{{this.id}}"><img src="assets/images/RAMBO-logo-100.jpg" /><h3>{{this.title}}</h3><p>{{this.summary}}</p></a>
+                    <h3>{{{this.title}}}</h3>
+                    <hr/>
+                    <p>{{{this.summary}}}</p>
+                    <hr/>
+                    <div class="rsscontent">{{{this.content}}}</div>
+                    <hr/>
+                    <p>Posted: {{this.updated}}</p>
             </li>
             {{/each}}
         </ul>
