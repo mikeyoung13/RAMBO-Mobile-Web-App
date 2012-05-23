@@ -42,7 +42,7 @@
         <ul data-role='listview' data-inset='true' data-filter='true'>
             {{#each feedItems}}
             <li>
-                <p class='ui-li-desc'>{{this.title}}</p>
+                <a href="{{this.id}}"><img src="assets/images/RAMBO-logo-100.jpg" /><h3>{{this.title}}</h3><p>{{this.summary}}</p></a>
             </li>
             {{/each}}
         </ul>
