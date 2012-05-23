@@ -38,6 +38,16 @@
         </ul>
     </script>
 
+    <script id="rss-result-template" type="text/x-handlebars-template">
+        <ul data-role='listview' data-inset='true' data-filter='true'>
+            {{#each feedItems}}
+            <li>
+                <p class='ui-li-desc'>{{this.title}}</p>
+            </li>
+            {{/each}}
+        </ul>
+    </script>
+
 </head>
 <body>
 
@@ -74,8 +84,8 @@
 </div>
 
 <div data-role="page" id="rss"  data-add-back-btn="true">
-    <div data-role="header" data-rel="back"><h1>RAMBO - Website News</h1></div>
-    <div data-role="content">Implementation in progress...</div>
+    <div data-role="header" data-rel="back"><h1></h1></div>
+    <div data-role="content"></div>
 </div>
 
 </body>

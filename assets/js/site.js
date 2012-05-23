@@ -1,7 +1,9 @@
 var twitterData = null;
 var calendarData = null;
+var rssFeedData = null;
 var twitterTemplate = null;
 var calendarTemplate = null;
+var rssTemplate = null;
 
 //twitterData = [{"created_at":"Sun May 6 14:48:28 +0000 2012","text":"Good MTB weather people!1"},{"created_at":"Sun May 6 10:30:28 +0000 2012","text":"Good MTB weather people!2"},{"created_at":"Sun May 6 07:30:28 +0000 2012","text":"Good MTB weather people!3"}];
 
@@ -84,6 +86,7 @@ $(document).ready(function() {
 
     twitterTemplate = Handlebars.compile($("#twitter-result-template").html());
     calendarTemplate = Handlebars.compile($("#calendar-result-template").html());
+    rssTemplate = Handlebars.compile($("#rss-result-template").html());
 
     Handlebars.registerHelper('timeAgo', function(dateString) {
         var date = new Date(dateString);
@@ -108,6 +111,11 @@ $(document).bind('pagechange',function(event,data) {
             //alert("loading twitter data!");
             getGoogleCal();
         }
+        if (rssFeedData === null) {
+            //$.mobile.pageloading();
+            //alert("loading twitter data!");
+            getRssFeed();
+        }
     }
 );
 
@@ -120,14 +128,14 @@ $(document).bind( "pagebeforechange", function( e, data ) {
         // want to handle URLs that request the data for a specific
         // category.
         var u = $.mobile.path.parseUrl( data.toPage ),
-            categoryPath = /^#category-item/,
+            rssPath = /^#rss/,
             twitterPath = /^#twitter/,
             calendarPath = /^#calendar/;
-        if ( u.hash.search(categoryPath) !== -1 ) {
+        if ( u.hash.search(rssPath) !== -1 ) {
             // We're being asked to display the items for a specific category.
             // Call our internal method that builds the content for the category
             // on the fly based on our in-memory category data structure.
-            showCategory( u, data.options );
+            showRSS( u, data.options );
 
             // Make sure to tell changePage() we've handled this call so it doesn't
             // have to do anything.
@@ -172,6 +180,35 @@ function getTwitter() {
                 console.log("Text: "+ tweet.text);
 
             }
+
+        },
+
+        error: function(xhr, status) {
+            alert('Sorry, there was a problem!');
+        },
+
+        complete: function(xhr, status) {
+            //print("request is complete ");
+        }
+    });
+}
+
+function getRssFeed() {
+
+    $.ajax({
+        url: 'http://query.yahooapis.com/v1/public/yql?q=select%20id%2C%20title.content%2C%20updated%2C%20summary.content%2C%20content.content%20from%20atom%20where%20url%3D%22http%3A%2F%2Fwww.rambo-mtb.org%2F%3Ffeed%3Datom%22&format=json',
+        type: 'GET',
+        dataType: 'jsonp',
+
+        success: function(json) {
+            //print("success");
+            //print(Object.keys(json));
+
+            rssFeedData = json;
+            //$.mobile.pageLoading(true);
+
+            console.log("**************************");
+            console.log("Count: "+ rssFeedData.query.count);
 
         },
 
@@ -258,6 +295,21 @@ function showTwitter( urlObj, options )
         $header.find( "h1" ).html( "RAMBO - Tweets" );
         $content.html( markup );
         processJQMListView($page, $content, options, urlObj);
+
+
+}
+
+function showRSS( urlObj, options )
+{
+    var pageSelector = getPageSelectorFromURL(urlObj);
+
+    var $page = $( pageSelector ),
+        $header = $page.children( ":jqmData(role=header)" ),
+        $content = $page.children( ":jqmData(role=content)" ),
+        markup = rssTemplate({feedItems:rssFeedData.query.results.entry});
+    $header.find( "h1" ).html( "RAMBO - Website News" );
+    $content.html( markup );
+    processJQMListView($page, $content, options, urlObj);
 
 
 }
