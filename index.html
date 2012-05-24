@@ -42,16 +42,27 @@
         <ul data-role='listview' data-inset='true' data-filter='true'>
             {{#each feedItems}}
             <li>
-                    <h3>{{{this.title}}}</h3>
-                    <hr/>
-                    <p>{{{this.summary}}}</p>
-                    <hr/>
-                    <div class="rsscontent">{{{this.content}}}</div>
-                    <hr/>
-                    <p>Posted: {{this.updated}}</p>
+                <a href="#rssDetails?feedNum={{this.feedNum}}">
+                <h3>{{{this.title}}}</h3>
+                <p>{{{this.summary}}}</p>
+                </a>
+
+                    <!--?id={{this.id}}"-->
+                    <!--<hr/>-->
+                    <!--<div class="rsscontent">{{{this.content}}}</div>-->
+                    <!--<hr/>-->
+                    <!--<p>Posted: {{this.updated}}</p>-->
             </li>
             {{/each}}
         </ul>
+    </script>
+
+    <script id="rss-detail-template" type="text/x-handlebars-template">
+
+        <h3>{{{feedItem.title}}}</h3>
+        <div class="rssDetailContent">{{{feedItem.content}}}</div>
+        <p>Posted: {{feedItem.updated}}</p>
+
     </script>
 
 </head>
@@ -66,7 +77,7 @@
     <div data-role="content">
         <img class="image-center" src="assets/images/RAMBO-logo-100.jpg" />
         <ul data-role="listview" data-inset="true">
-            <li><a href="#rss">Website News</a></li>
+            <li><a href="#rssIndex">Website News</a></li>
             <li><a href="#twitter">Twitter Feed</a></li>
             <li><a href="#calendar">Calendar</a></li>
         </ul>
@@ -89,7 +100,12 @@
     <div data-role="content"></div>
 </div>
 
-<div data-role="page" id="rss"  data-add-back-btn="true">
+<div data-role="page" id="rssIndex"  data-add-back-btn="true">
+    <div data-role="header" data-rel="back"><h1></h1></div>
+    <div data-role="content"></div>
+</div>
+
+<div data-role="page" id="rssDetails"  data-add-back-btn="true">
     <div data-role="header" data-rel="back"><h1></h1></div>
     <div data-role="content"></div>
 </div>

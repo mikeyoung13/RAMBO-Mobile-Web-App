@@ -87,6 +87,7 @@ $(document).ready(function() {
     twitterTemplate = Handlebars.compile($("#twitter-result-template").html());
     calendarTemplate = Handlebars.compile($("#calendar-result-template").html());
     rssTemplate = Handlebars.compile($("#rss-result-template").html());
+    rssDetailTemplate = Handlebars.compile($("#rss-detail-template").html());
 
     Handlebars.registerHelper('timeAgo', function(dateString) {
         var date = new Date(dateString);
@@ -95,7 +96,7 @@ $(document).ready(function() {
     });
 
 
-    console.log("template compiled!");
+    console.log("templates compiled!");
 
 });
 
@@ -128,7 +129,8 @@ $(document).bind( "pagebeforechange", function( e, data ) {
         // want to handle URLs that request the data for a specific
         // category.
         var u = $.mobile.path.parseUrl( data.toPage ),
-            rssPath = /^#rss/,
+            rssPath = /^#rssIndex/,
+            rssDetails = /^#rssDetails/,
             twitterPath = /^#twitter/,
             calendarPath = /^#calendar/;
         if ( u.hash.search(rssPath) !== -1 ) {
@@ -139,15 +141,16 @@ $(document).bind( "pagebeforechange", function( e, data ) {
 
             // Make sure to tell changePage() we've handled this call so it doesn't
             // have to do anything.
-            e.preventDefault()
+            e.preventDefault();
         } else if (u.hash.search(twitterPath) !== -1)  {
             showTwitter( u, data.options );
-            e.preventDefault()
-
+            e.preventDefault();
         } else if (u.hash.search(calendarPath) !== -1)  {
             showCalendar( u, data.options );
-            e.preventDefault()
-
+            e.preventDefault();
+        } else if (u.hash.search(rssDetails) !== -1)  {
+            showRSSDetails( u, data.options );
+            e.preventDefault();
         }
 
     }
@@ -209,6 +212,11 @@ function getRssFeed() {
 
             console.log("**************************");
             console.log("Count: "+ rssFeedData.query.count);
+
+            var feedItems =  rssFeedData.query.results.entry;
+            for (var i = 0; i < feedItems.length; i++) {
+                feedItems[i].feedNum = i;
+            }
 
         },
 
@@ -309,8 +317,30 @@ function showRSS( urlObj, options )
         markup = rssTemplate({feedItems:rssFeedData.query.results.entry});
     $header.find( "h1" ).html( "RAMBO - Website News" );
     $content.html( markup );
-    var images = $(".rsscontent img");
-    images.remove();
+
+    // remove images
+//    var images = $(".rsscontent img");
+//    images.remove();
+    processJQMListView($page, $content, options, urlObj);
+
+
+}
+
+function showRSSDetails( urlObj, options )
+{
+    var pageSelector = getPageSelectorFromURL(urlObj);
+
+    var feedNum = urlObj.hash.replace( /.*feedNum=/, "" );
+    console.log("feedNum="+feedNum);
+
+    var $page = $( pageSelector ),
+        $header = $page.children( ":jqmData(role=header)" ),
+        $content = $page.children( ":jqmData(role=content)" ),
+        markup = rssDetailTemplate({feedItem:rssFeedData.query.results.entry[feedNum]});
+    $header.find( "h1" ).html( "RSS Details" );
+    $content.html( markup );
+//    var images = $(".rsscontent img");
+//    images.remove();
     processJQMListView($page, $content, options, urlObj);
 
 
