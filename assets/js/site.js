@@ -216,6 +216,7 @@ function getRssFeed() {
             var feedItems =  rssFeedData.query.results.entry;
             for (var i = 0; i < feedItems.length; i++) {
                 feedItems[i].feedNum = i;
+                feedItems[i].updatedDate = getFormattedDate(new Date(feedItems[i].updated));
             }
 
         },
@@ -300,7 +301,7 @@ function showTwitter( urlObj, options )
         $header = $page.children( ":jqmData(role=header)" ),
         $content = $page.children( ":jqmData(role=content)" ),
         markup = twitterTemplate({things:twitterData});
-        $header.find( "h1" ).html( "RAMBO - Tweets" );
+        $header.find( "h1" ).html( "Tweets" );
         $content.html( markup );
         processJQMListView($page, $content, options, urlObj);
 
@@ -315,7 +316,7 @@ function showRSS( urlObj, options )
         $header = $page.children( ":jqmData(role=header)" ),
         $content = $page.children( ":jqmData(role=content)" ),
         markup = rssTemplate({feedItems:rssFeedData.query.results.entry});
-    $header.find( "h1" ).html( "RAMBO - Website News" );
+    $header.find( "h1" ).html( "Website News" );
     $content.html( markup );
 
     // remove images
@@ -337,7 +338,7 @@ function showRSSDetails( urlObj, options )
         $header = $page.children( ":jqmData(role=header)" ),
         $content = $page.children( ":jqmData(role=content)" ),
         markup = rssDetailTemplate({feedItem:rssFeedData.query.results.entry[feedNum]});
-    $header.find( "h1" ).html( "RSS Details" );
+    $header.find( "h1" ).html( "Details" );
     $content.html( markup );
 //    var images = $(".rsscontent img");
 //    images.remove();
@@ -355,7 +356,7 @@ function showCalendar( urlObj, options )
         $header = $page.children( ":jqmData(role=header)" ),
         $content = $page.children( ":jqmData(role=content)" ),
         markup = calendarTemplate({events:calendarData.items});
-    $header.find( "h1" ).html( "RAMBO - Calendar" );
+    $header.find( "h1" ).html( "Calendar" );
     $content.html( markup );
     processJQMListView($page, $content, options, urlObj);
 
