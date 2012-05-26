@@ -4,6 +4,7 @@ var rssFeedData = null;
 var twitterTemplate = null;
 var calendarTemplate = null;
 var rssTemplate = null;
+var rssDetailTemplate = null;
 
 //twitterData = [{"created_at":"Sat May 26 00:01:01 +0000 2012","text":"Good MTB weather people!1"},{"created_at":"Fri May 25 00:01:01 +0000 2012","text":"Good MTB weather people!2"},{"created_at":"Sun May 6 07:30:28 +0000 2012","text":"Good MTB weather people!3"}];
 
