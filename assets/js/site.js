@@ -5,10 +5,13 @@ var twitterTemplate = null;
 var calendarTemplate = null;
 var rssTemplate = null;
 
-//twitterData = [{"created_at":"Sun May 6 14:48:28 +0000 2012","text":"Good MTB weather people!1"},{"created_at":"Sun May 6 10:30:28 +0000 2012","text":"Good MTB weather people!2"},{"created_at":"Sun May 6 07:30:28 +0000 2012","text":"Good MTB weather people!3"}];
+//twitterData = [{"created_at":"Sat May 26 00:01:01 +0000 2012","text":"Good MTB weather people!1"},{"created_at":"Fri May 25 00:01:01 +0000 2012","text":"Good MTB weather people!2"},{"created_at":"Sun May 6 07:30:28 +0000 2012","text":"Good MTB weather people!3"}];
+
+// ISO date parser downloaded 5/26/2012
+/** https://github.com/csnover/js-iso8601 */(function(n,f){var u=n.parse,c=[1,4,5,6,7,10,11];n.parse=function(t){var i,o,a=0;if(o=/^(\d{4}|[+\-]\d{6})(?:-(\d{2})(?:-(\d{2}))?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{3}))?)?(?:(Z)|([+\-])(\d{2})(?::(\d{2}))?)?)?$/.exec(t)){for(var v=0,r;r=c[v];++v)o[r]=+o[r]||0;o[2]=(+o[2]||1)-1,o[3]=+o[3]||1,o[8]!=="Z"&&o[9]!==f&&(a=o[10]*60+o[11],o[9]==="+"&&(a=0-a)),i=n.UTC(o[1],o[2],o[3],o[4],o[5]+a,o[6],o[7])}else i=u?u(t):NaN;return i}})(Date)
 
 function getFormattedDate(date) {
-    console.log("Date to string",date.toDateString());
+    //console.log("Date to string",date.toDateString());
     var dateArray = date.toDateString().split(" ");
     dateArray.pop();
     return dateArray.join(" ");
@@ -66,11 +69,11 @@ function generateEventFormattedDates(events) {
     for (var i = 0; i < events.length; i++) {
         var event = events[i];
         if (event.start.date) {
-            // Safari requires the full date
-            event.formattedDate = getFormattedDate(new Date(event.start.date +"T00:00:00-04:00"));
+            // Safari and js-iso8601 require the full date
+            event.formattedDate = getFormattedDate(new Date(Date.parse(event.start.date +"T00:00:00-04:00")));
         } else if (event.start.dateTime) {
-            var startDT = new Date(event.start.dateTime);
-            var endDT = new Date(event.end.dateTime);
+            var startDT = new Date(Date.parse(event.start.dateTime));
+            var endDT = new Date(Date.parse(event.end.dateTime));
 
             var startDate = getFormattedDate(startDT);
             var startTime = getFormattedTime(startDT);
@@ -89,19 +92,21 @@ $(document).ready(function() {
     rssTemplate = Handlebars.compile($("#rss-result-template").html());
     rssDetailTemplate = Handlebars.compile($("#rss-detail-template").html());
 
+    //console.log("templates compiled!");
+
     Handlebars.registerHelper('timeAgo', function(dateString) {
-        var date = new Date(dateString);
-        var msec = date.getTime();
-        return getTweetTime(Date.now(), msec);
+        var dateMS = Date.parse(dateString);
+        var now =  (new Date()).getTime();
+        return getTweetTime(now, dateMS);
     });
 
 
-    console.log("templates compiled!");
+
 
 });
 
 $(document).bind('pagechange',function(event,data) {
-        console.log("pagechange event!!!");
+        //console.log("pagechange event!!!");
         if (twitterData === null) {
             //$.mobile.pageloading();
             //alert("loading twitter data!");
@@ -117,6 +122,7 @@ $(document).bind('pagechange',function(event,data) {
             //alert("loading twitter data!");
             getRssFeed();
         }
+
     }
 );
 
@@ -176,22 +182,22 @@ function getTwitter() {
             twitterData = json;
             //$.mobile.pageLoading(true);
 
-            for (var i=0; i<json.length; i++) {
-                var tweet = json[i];
-                console.log("**************************");
-                console.log("Date: "+ tweet.created_at);
-                console.log("Text: "+ tweet.text);
-
-            }
+//            for (var i=0; i<json.length; i++) {
+//                var tweet = json[i];
+//                console.log("**************************");
+//                console.log("Date: "+ tweet.created_at);
+//                console.log("Text: "+ tweet.text);
+//
+//            }
 
         },
 
         error: function(xhr, status) {
-            alert('Sorry, there was a problem!');
+            alert('Sorry, there was a problem getting Twitter data');
         },
 
         complete: function(xhr, status) {
-            //print("request is complete ");
+            console.log("done getting Twitter data");
         }
     });
 }
@@ -210,23 +216,23 @@ function getRssFeed() {
             rssFeedData = json;
             //$.mobile.pageLoading(true);
 
-            console.log("**************************");
-            console.log("Count: "+ rssFeedData.query.count);
+//            console.log("**************************");
+//            console.log("Count: "+ rssFeedData.query.count);
 
             var feedItems =  rssFeedData.query.results.entry;
             for (var i = 0; i < feedItems.length; i++) {
                 feedItems[i].feedNum = i;
-                feedItems[i].updatedDate = getFormattedDate(new Date(feedItems[i].updated));
+                feedItems[i].updatedDate = getFormattedDate(new Date(Date.parse(feedItems[i].updated)));
             }
 
         },
 
         error: function(xhr, status) {
-            alert('Sorry, there was a problem!');
+            alert('Sorry, there was a problem getting RSS/ATOM data');
         },
 
         complete: function(xhr, status) {
-            //print("request is complete ");
+            console.log("done getting RSS/ATOM data");
         }
     });
 }
@@ -251,15 +257,15 @@ function getGoogleCal() {
         success: function(json) {
             calendarData = json;
             generateEventFormattedDates(json.items);
-            console.log(JSON.stringify(json, null, '  '));
+            //console.log(JSON.stringify(json, null, '  '));
         },
 
         error: function(xhr, status) {
-            alert('Sorry, there was a problem!');
+            alert('Sorry, there was a problem getting Google Calendar data');
         },
 
         complete: function(xhr, status) {
-            console.log("request is complete ");
+            console.log("done getting Google Calendar data");
         }
     });
 }
@@ -332,7 +338,7 @@ function showRSSDetails( urlObj, options )
     var pageSelector = getPageSelectorFromURL(urlObj);
 
     var feedNum = urlObj.hash.replace( /.*feedNum=/, "" );
-    console.log("feedNum="+feedNum);
+    //console.log("feedNum="+feedNum);
 
     var $page = $( pageSelector ),
         $header = $page.children( ":jqmData(role=header)" ),
