@@ -206,16 +206,17 @@ function getTwitter() {
 function getRssFeed() {
 
     $.ajax({
-        url : 'http://query.yahooapis.com/v1/public/yql',
-        jsonp : 'callback',
-        data : {
-            q : 'select id, title.content, updated, summary.content, content.content from atom where url="http://www.rambo-mtb.org/?feed=atom" and category.term not in ("Trails Status")',
-            format : 'json'
+        url:'http://query.yahooapis.com/v1/public/yql',
+        data:{
+            q:'select id, title.content, updated, summary.content, content.content from atom where url="http://www.rambo-mtb.org/?feed=atom" and category.term not in ("Trails Status")',
+            format:'json'
         },
-        type: 'GET',
-        dataType: 'jsonp',
+        type:'GET',
+        dataType:'jsonp',
+        jsonp:'callback',
+        jsonpCallback:'cbfunc',
 
-        success: function(json) {
+        success:function (json) {
             //print("success");
             //print(Object.keys(json));
 
@@ -225,7 +226,7 @@ function getRssFeed() {
 //            console.log("**************************");
 //            console.log("Count: "+ rssFeedData.query.count);
 
-            var feedItems =  rssFeedData.query.results.entry;
+            var feedItems = rssFeedData.query.results.entry;
             for (var i = 0; i < feedItems.length; i++) {
                 feedItems[i].feedNum = i;
                 feedItems[i].updatedDate = getFormattedDate(new Date(Date.parse(feedItems[i].updated)));
@@ -233,11 +234,11 @@ function getRssFeed() {
 
         },
 
-        error: function(xhr, status) {
+        error:function (xhr, status) {
             alert('Sorry, there was a problem getting RSS/ATOM data');
         },
 
-        complete: function(xhr, status) {
+        complete:function (xhr, status) {
             console.log("done getting RSS/ATOM data");
         }
     });
