@@ -206,7 +206,7 @@ function getTwitter() {
 function getRssFeed() {
 
     $.ajax({
-        url: 'http://query.yahooapis.com/v1/public/yql?q=select%20id%2C%20title.content%2C%20updated%2C%20summary.content%2C%20content.content%20from%20atom%20where%20url%3D%22http%3A%2F%2Fwww.rambo-mtb.org%2F%3Ffeed%3Datom%22&format=json',
+        url: 'http://query.yahooapis.com/v1/public/yql?q=select%20id%2C%20title.content%2C%20updated%2C%20summary.content%2C%20content.content%20from%20atom%20where%20url%3D%22http%3A%2F%2Fwww.rambo-mtb.org%2F%3Ffeed%3Datom%22%20and%20category.term%20not%20in%20(%22Trails%20Status%22)&format=json',
         type: 'GET',
         dataType: 'jsonp',
 
