@@ -7,6 +7,7 @@ var twitterTemplate = null;
 var calendarTemplate = null;
 var rssTemplate = null;
 var rssDetailTemplate = null;
+var trailStatusTemplate = null;
 
 //twitterData = [{"created_at":"Sat May 26 00:01:01 +0000 2012","text":"Good MTB weather people!1"},{"created_at":"Fri May 25 00:01:01 +0000 2012","text":"Good MTB weather people!2"},{"created_at":"Sun May 6 07:30:28 +0000 2012","text":"Good MTB weather people!3"}];
 
@@ -94,6 +95,7 @@ $(document).ready(function() {
     calendarTemplate = Handlebars.compile($("#calendar-result-template").html());
     rssTemplate = Handlebars.compile($("#rss-result-template").html());
     rssDetailTemplate = Handlebars.compile($("#rss-detail-template").html());
+    trailStatusTemplate = Handlebars.compile($("#trail-status-template").html());
 
     //console.log("templates compiled!");
 
@@ -140,6 +142,7 @@ $(document).bind( "pagebeforechange", function( e, data ) {
         var u = $.mobile.path.parseUrl( data.toPage ),
             rssPath = /^#rssIndex/,
             rssDetails = /^#rssDetails/,
+            trailStatusPath = /^#trailStatus/,
             twitterPath = /^#twitter/,
             calendarPath = /^#calendar/;
         if ( u.hash.search(rssPath) !== -1 ) {
@@ -159,6 +162,9 @@ $(document).bind( "pagebeforechange", function( e, data ) {
             e.preventDefault();
         } else if (u.hash.search(rssDetails) !== -1)  {
             showRSSDetails( u, data.options );
+            e.preventDefault();
+        } else if (u.hash.search(trailStatusPath) !== -1)  {
+            showTrailStatus( u, data.options );
             e.preventDefault();
         }
 
@@ -371,6 +377,21 @@ function showRSSDetails( urlObj, options )
     $content.html( markup );
 //    var images = $(".rsscontent img");
 //    images.remove();
+    processJQMListView($page, $content, options, urlObj);
+
+
+}
+
+function showTrailStatus( urlObj, options )
+{
+    var pageSelector = getPageSelectorFromURL(urlObj);
+
+    var $page = $( pageSelector ),
+        $header = $page.children( ":jqmData(role=header)" ),
+        $content = $page.children( ":jqmData(role=content)" ),
+        markup = trailStatusTemplate({status:trailStatusData});
+    $header.find( "h1" ).html( "Trail Status" );
+    $content.html( markup );
     processJQMListView($page, $content, options, urlObj);
 
 

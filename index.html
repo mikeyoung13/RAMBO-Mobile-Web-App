@@ -52,12 +52,27 @@
     </script>
 
     <script id="rss-detail-template" type="text/x-handlebars-template">
-
         <h3>{{{feedItem.title}}}</h3>
         <div class="rssDetailContent">{{{feedItem.content}}}</div>
         <p>Last Update: {{feedItem.updatedDate}}</p>
+    </script>
 
+    <script id="trail-status-template" type="text/x-handlebars-template">
+        <ul data-role='listview' data-inset='true'>
+            <li data-role="list-divider">Big Creek</li>
+            <li><p class='ui-li-desc'><strong>{{status.title}}</strong> (Last Update: {{status.updatedDate}})</p></li>
+            <li><p class='ui-li-desc'>Status also available via the Big Creek hotline: <a href="tel:6784040814">678-404-0814</a></p></li>
 
+            <li data-role="list-divider">Central Park</li>
+            <li><p class='ui-li-desc'>Status available via the Forsyth County Central Park hotline: <a href="tel:7708862851">770-886-2851</a></p></li>
+
+            <li data-role="list-divider">Mt. Adams</li>
+            <li><p class='ui-li-desc'>Live status not available.  Please avoid riding after significant rainfall.</p></li>
+
+            <li data-role="list-divider">Charleston Park</li>
+            <li><p class='ui-li-desc'>Coming soon!</p></li>
+
+        </ul>
     </script>
 
 </head>
@@ -75,6 +90,7 @@
             <li><a href="#rssIndex">Website News</a></li>
             <li><a href="#twitter">Twitter Feed</a></li>
             <li><a href="#calendar">Calendar</a></li>
+            <li><a href="#trailStatus">Trail Status</a></li>
         </ul>
     </div>
 
@@ -96,6 +112,11 @@
 </div>
 
 <div data-role="page" id="rssDetails"  data-add-back-btn="true">
+    <div data-role="header" data-rel="back"><h1></h1></div>
+    <div data-role="content"></div>
+</div>
+
+<div data-role="page" id="trailStatus"  data-add-back-btn="true">
     <div data-role="header" data-rel="back"><h1></h1></div>
     <div data-role="content"></div>
 </div>
