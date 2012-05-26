@@ -1,6 +1,8 @@
 var twitterData = null;
 var calendarData = null;
 var rssFeedData = null;
+var trailStatusData = null;
+
 var twitterTemplate = null;
 var calendarTemplate = null;
 var rssTemplate = null;
@@ -205,10 +207,13 @@ function getTwitter() {
 
 function getRssFeed() {
 
+    var query1 = 'select id, title.content, updated, summary.content, content.content from atom where url="http://www.rambo-mtb.org/?feed=atom" and category.term not in ("Trails Status")';
+    var query2 = 'select id, title.content, updated, summary.content, content.content from atom where url="http://www.rambo-mtb.org/?feed=atom" and category.term = "Trails Status"';
+
     $.ajax({
         url:'http://query.yahooapis.com/v1/public/yql',
         data:{
-            q:'select id, title.content, updated, summary.content, content.content from atom where url="http://www.rambo-mtb.org/?feed=atom" and category.term not in ("Trails Status")',
+            q:"select * from yql.query.multi where queries='"+query1+";"+query2+"'",
             format:'json'
         },
         type:'GET',
@@ -220,17 +225,28 @@ function getRssFeed() {
             //print("success");
             //print(Object.keys(json));
 
-            rssFeedData = json;
+            rssFeedData = json.query.results.results[0].entry;
             //$.mobile.pageLoading(true);
 
 //            console.log("**************************");
 //            console.log("Count: "+ rssFeedData.query.count);
 
-            var feedItems = rssFeedData.query.results.entry;
-            for (var i = 0; i < feedItems.length; i++) {
-                feedItems[i].feedNum = i;
-                feedItems[i].updatedDate = getFormattedDate(new Date(Date.parse(feedItems[i].updated)));
+            //var feedItems = rssFeedData.query.results.results[0].entry;
+            for (var i = 0; i < rssFeedData.length; i++) {
+                rssFeedData[i].feedNum = i;
+                rssFeedData[i].updatedDate = getFormattedDate(new Date(Date.parse(rssFeedData[i].updated)));
             }
+
+            trailStatusData = json.query.results.results[1].entry;
+            if (trailStatusData) {
+                trailStatusData.updatedDate =  getFormattedDate(new Date(Date.parse(trailStatusData.updated)));
+            } else {
+                // default if not found
+                trailStatusData.title = "No recent updates.  The trails are probably open!";
+                trailStatusData.updatedDate = null;
+            }
+
+            console.log(trailStatusData);
 
         },
 
@@ -328,7 +344,7 @@ function showRSS( urlObj, options )
     var $page = $( pageSelector ),
         $header = $page.children( ":jqmData(role=header)" ),
         $content = $page.children( ":jqmData(role=content)" ),
-        markup = rssTemplate({feedItems:rssFeedData.query.results.entry});
+        markup = rssTemplate({feedItems:rssFeedData});
     $header.find( "h1" ).html( "Website News" );
     $content.html( markup );
 
@@ -350,7 +366,7 @@ function showRSSDetails( urlObj, options )
     var $page = $( pageSelector ),
         $header = $page.children( ":jqmData(role=header)" ),
         $content = $page.children( ":jqmData(role=content)" ),
-        markup = rssDetailTemplate({feedItem:rssFeedData.query.results.entry[feedNum]});
+        markup = rssDetailTemplate({feedItem:rssFeedData[feedNum]});
     $header.find( "h1" ).html( "Details" );
     $content.html( markup );
 //    var images = $(".rsscontent img");
