@@ -105,6 +105,7 @@
             <li><a href="#twitter">Twitter Feed</a></li>
             <li><a href="#calendar">Calendar</a></li>
             <li><a href="#trailStatus">Trail Status</a></li>
+            <li><a href="#mailList">Mail List</a></li>
         </ul>
     </div>
 
@@ -133,6 +134,21 @@
 <div data-role="page" id="trailStatus"  data-add-back-btn="true">
     <div data-role="header" data-rel="back"><h1></h1></div>
     <div data-role="content"></div>
+</div>
+
+<div data-role="page" id="mailList"  data-add-back-btn="true">
+    <div data-role="header" data-rel="back"><h1>Mail List</h1></div>
+    <div data-role="content">
+        <p>RAMBO-Announce is a low-volume email list used to announce festivals, skills clinics, bike demos, work parties, races, camping trips, night rides, group rides, etc.</p>
+        <p>Join by submitting your email address below -or- by visiting the Google Group at <a href="http://groups.google.com/group/rambo-announce/about" target="_blank">http://groups.google.com/group/rambo-announce/about</a></p>
+        <form id="emailForm" method="GET" action="http://groups.google.com/group/rambo-announce/boxsubscribe" target="_blank" data-ajax="false" >
+            <!--<div data-role="fieldcontain">-->
+                <input type="email" name="email" id="emailAddress" value="" data-mini="true" placeholder="Email Address"/>
+                <h3 id="notification"></h3>
+                <button data-theme="b" id="submitEmail" type="submit">Submit</button>
+            <!--</div>-->
+        </form>
+    </div>
 </div>
 
 </body>
