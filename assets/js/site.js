@@ -91,6 +91,37 @@ function generateEventFormattedDates(events) {
 
 $(document).ready(function() {
 
+    //console.log("doc ready event!!!");
+
+    // show spinner during AJAX requests
+    jQuery.ajaxSetup({
+        beforeSend: function() {
+            //console.log("before send");
+            $.mobile.showPageLoadingMsg();
+        },
+        complete: function(){
+            //console.log("complete");
+            if (twitterData && calendarData && rssFeedData) {
+                $.mobile.hidePageLoadingMsg();
+            }
+        }
+    });
+
+    // get Data
+    if (twitterData === null) {
+        //alert("loading twitter data!");
+        getTwitter();
+    }
+    if (calendarData === null) {
+        //alert("loading twitter data!");
+        getGoogleCal();
+    }
+    if (rssFeedData === null) {
+        //alert("loading twitter data!");
+        getRssFeed();
+    }
+
+    // compile templates
     twitterTemplate = Handlebars.compile($("#twitter-result-template").html());
     calendarTemplate = Handlebars.compile($("#calendar-result-template").html());
     rssTemplate = Handlebars.compile($("#rss-result-template").html());
@@ -107,24 +138,6 @@ $(document).ready(function() {
 
 
 });
-
-$(document).bind('pagechange',function(event,data) {
-        //console.log("pagechange event!!!");
-        if (twitterData === null) {
-            //alert("loading twitter data!");
-            getTwitter();
-        }
-        if (calendarData === null) {
-            //alert("loading twitter data!");
-            getGoogleCal();
-        }
-        if (rssFeedData === null) {
-            //alert("loading twitter data!");
-            getRssFeed();
-        }
-
-    }
-);
 
 // Listen for any attempts to call changePage().
 $(document).bind( "pagebeforechange", function( e, data ) {
@@ -180,6 +193,7 @@ function getTwitter() {
         dataType: 'jsonp',
 
         success: function(json) {
+            console.log("done getting Twitter data");
             //print("success");
             //print(Object.keys(json));
 
@@ -197,10 +211,6 @@ function getTwitter() {
 
         error: function(xhr, status) {
             alert('Sorry, there was a problem getting Twitter data');
-        },
-
-        complete: function(xhr, status) {
-            console.log("done getting Twitter data");
         }
     });
 }
@@ -224,6 +234,7 @@ function getRssFeed() {
         success:function (json) {
             //print("success");
             //print(Object.keys(json));
+            console.log("done getting RSS/ATOM data");
 
             rssFeedData = json.query.results.results[0].entry;
 
@@ -245,16 +256,12 @@ function getRssFeed() {
                 trailStatusData.updatedDate = null;
             }
 
-            console.log(trailStatusData);
+            //console.log(trailStatusData);
 
         },
 
         error:function (xhr, status) {
             alert('Sorry, there was a problem getting RSS/ATOM data');
-        },
-
-        complete:function (xhr, status) {
-            console.log("done getting RSS/ATOM data");
         }
     });
 }
@@ -277,6 +284,7 @@ function getGoogleCal() {
         type: 'GET',
         dataType: 'jsonp',
         success: function(json) {
+            console.log("done getting Google Calendar data");
             calendarData = json;
             generateEventFormattedDates(json.items);
             //console.log(JSON.stringify(json, null, '  '));
@@ -284,10 +292,6 @@ function getGoogleCal() {
 
         error: function(xhr, status) {
             alert('Sorry, there was a problem getting Google Calendar data');
-        },
-
-        complete: function(xhr, status) {
-            console.log("done getting Google Calendar data");
         }
     });
 }
