@@ -97,8 +97,6 @@ $(document).ready(function() {
     rssDetailTemplate = Handlebars.compile($("#rss-detail-template").html());
     trailStatusTemplate = Handlebars.compile($("#trail-status-template").html());
 
-    //console.log("templates compiled!");
-
     Handlebars.registerHelper('timeAgo', function(dateString) {
         var dateMS = Date.parse(dateString);
         var now =  (new Date()).getTime();
@@ -113,17 +111,14 @@ $(document).ready(function() {
 $(document).bind('pagechange',function(event,data) {
         //console.log("pagechange event!!!");
         if (twitterData === null) {
-            //$.mobile.pageloading();
             //alert("loading twitter data!");
             getTwitter();
         }
         if (calendarData === null) {
-            //$.mobile.pageloading();
             //alert("loading twitter data!");
             getGoogleCal();
         }
         if (rssFeedData === null) {
-            //$.mobile.pageloading();
             //alert("loading twitter data!");
             getRssFeed();
         }
@@ -189,7 +184,6 @@ function getTwitter() {
             //print(Object.keys(json));
 
             twitterData = json;
-            //$.mobile.pageLoading(true);
 
 //            for (var i=0; i<json.length; i++) {
 //                var tweet = json[i];
@@ -232,7 +226,6 @@ function getRssFeed() {
             //print(Object.keys(json));
 
             rssFeedData = json.query.results.results[0].entry;
-            //$.mobile.pageLoading(true);
 
 //            console.log("**************************");
 //            console.log("Count: "+ rssFeedData.query.count);
