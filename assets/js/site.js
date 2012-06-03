@@ -1,13 +1,16 @@
-var twitterData = null;
-var calendarData = null;
-var rssFeedData = null;
-var trailStatusData = null;
+var twitterData = null,
+    calendarData = null,
+    rssFeedData = null,
+    trailStatusData = null;
 
-var twitterTemplate = null;
-var calendarTemplate = null;
-var rssTemplate = null;
-var rssDetailTemplate = null;
-var trailStatusTemplate = null;
+var ERROR_FLAG = "error",
+    ERROR_MSG = "Data unavailable - please tray again later";
+
+var twitterTemplate = null,
+    calendarTemplate = null,
+    rssTemplate = null,
+    rssDetailTemplate = null,
+    trailStatusTemplate = null;
 
 //twitterData = [{"created_at":"Sat May 26 00:01:01 +0000 2012","text":"Good MTB weather people!1"},{"created_at":"Fri May 25 00:01:01 +0000 2012","text":"Good MTB weather people!2"},{"created_at":"Sun May 6 07:30:28 +0000 2012","text":"Good MTB weather people!3"}];
 
@@ -210,6 +213,7 @@ function getTwitter() {
         },
 
         error: function(xhr, status) {
+            twitterData =  ERROR_FLAG;
             alert('Sorry, there was a problem getting Twitter data');
         }
     });
@@ -261,7 +265,11 @@ function getRssFeed() {
         },
 
         error:function (xhr, status) {
-            alert('Sorry, there was a problem getting RSS/ATOM data');
+            rssFeedData = ERROR_FLAG;
+            trailStatusData = {};
+            trailStatusData.title = ERROR_MSG;
+            trailStatusData.updatedDate = "N/A";
+            alert('Sorry, there was a problem getting Website News and Trail Status');
         }
     });
 }
@@ -291,6 +299,7 @@ function getGoogleCal() {
         },
 
         error: function(xhr, status) {
+            calendarData =  ERROR_FLAG;
             alert('Sorry, there was a problem getting Google Calendar data');
         }
     });
@@ -329,13 +338,17 @@ function showTwitter( urlObj, options )
     var pageSelector = getPageSelectorFromURL(urlObj);
 
 
-        var $page = $( pageSelector ),
+    var $page = $( pageSelector ),
         $header = $page.children( ":jqmData(role=header)" ),
         $content = $page.children( ":jqmData(role=content)" ),
         markup = twitterTemplate({things:twitterData});
-        $header.find( "h1" ).html( "Tweets" );
+    $header.find( "h1" ).html( "Tweets" );
+    if (twitterData !== ERROR_FLAG) {
         $content.html( markup );
-        processJQMListView($page, $content, options, urlObj);
+    } else {
+        $content.html(ERROR_MSG);
+    }
+    processJQMListView($page, $content, options, urlObj);
 
 
 }
@@ -349,7 +362,12 @@ function showRSS( urlObj, options )
         $content = $page.children( ":jqmData(role=content)" ),
         markup = rssTemplate({feedItems:rssFeedData});
     $header.find( "h1" ).html( "Website News" );
-    $content.html( markup );
+
+    if (rssFeedData !== ERROR_FLAG) {
+        $content.html( markup );
+    } else {
+        $content.html(ERROR_MSG);
+    }
 
     // remove images
 //    var images = $(".rsscontent img");
@@ -404,7 +422,12 @@ function showCalendar( urlObj, options )
         $content = $page.children( ":jqmData(role=content)" ),
         markup = calendarTemplate({events:calendarData.items});
     $header.find( "h1" ).html( "Calendar" );
-    $content.html( markup );
+    if (calendarData !== ERROR_FLAG) {
+        $content.html( markup );
+    } else {
+        $content.html(ERROR_MSG);
+    }
+
     processJQMListView($page, $content, options, urlObj);
 
 
