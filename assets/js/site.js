@@ -92,6 +92,12 @@ function generateEventFormattedDates(events) {
     }
 }
 
+$(document).bind("mobileinit", function(){
+    // remove click delay
+//    $.mobile.buttonMarkup.hoverDelay = 0;
+//    $.mobile.defaultPageTransition = 'slide';
+});
+
 $(document).ready(function() {
 
     //console.log("doc ready event!!!");
@@ -109,6 +115,8 @@ $(document).ready(function() {
             }
         }
     });
+
+
 
     // get Data
     if (twitterData === null) {
