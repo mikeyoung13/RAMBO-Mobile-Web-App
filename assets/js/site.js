@@ -390,6 +390,13 @@ function showRSSDetails( urlObj, options )
         markup = rssDetailTemplate({feedItem:rssFeedData[feedNum]});
     $header.find( "h1" ).html( "Details" );
     $content.html( markup );
+
+    // resize images to match mobile device using src.sencha.io service
+    var image = $('div.rssDetailContent img');
+    image.attr('src','http://src.sencha.io/'+image.attr('src'));
+    image.attr('width','100%');
+    image.removeAttr('height');
+
 //    var images = $(".rsscontent img");
 //    images.remove();
     processJQMListView($page, $content, options, urlObj);
