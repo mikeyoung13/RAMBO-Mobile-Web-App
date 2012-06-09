@@ -392,13 +392,13 @@ function showRSSDetails( urlObj, options )
     $content.html( markup );
 
     // resize images to match mobile device using src.sencha.io service
-    var image = $('div.rssDetailContent img');
-    image.attr('src','http://src.sencha.io/'+image.attr('src'));
-    image.attr('width','100%');
-    image.removeAttr('height');
+    $('div.rssDetailContent img').each(function() {
+        var image = $(this);
+        image.attr('src','http://src.sencha.io/-30/'+image.attr('src'));
+        image.removeAttr('width');
+        image.removeAttr('height');
+    });
 
-//    var images = $(".rsscontent img");
-//    images.remove();
     processJQMListView($page, $content, options, urlObj);
 
 
