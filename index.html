@@ -102,14 +102,15 @@
 
     <div data-role="header">
         <h1>RAMBO MTB</h1>
+        <a href="index.html" data-ajax="false" data-icon="refresh" class="ui-btn-right">Refresh</a>
     </div>
 
     <div data-role="content">
         <img class="image-center" src="assets/images/RAMBO-logo-100.jpg" />
         <ul data-role="listview" data-inset="true">
             <li><a href="#rssIndex">Website News</a></li>
-            <li><a href="#twitter">Twitter Feed</a></li>
             <li><a href="#calendar">Calendar</a></li>
+            <li><a href="#twitter">Twitter Feed</a></li>
             <li><a href="#trailStatus">Trail Status</a></li>
             <li><a href="#mailList">Mail List</a></li>
         </ul>
@@ -117,49 +118,33 @@
 
 </div>
 
-<div data-role="page" id="twitter">
-    <div data-role="header" >
-        <a href="" data-icon="arrow-l" data-rel="back" data-iconpos="left">Back</a>
-        <h1></h1>
-        <a href="index.html" data-icon="refresh">Refresh</a>
-    </div>
+<div data-role="page" id="twitter" data-add-back-btn="true">
+    <div data-role="header" ><h1></h1></div>
     <div data-role="content"></div>
 </div>
 
-<div data-role="page" id="calendar">
-    <div data-role="header" >
-        <a href="" data-icon="arrow-l" data-rel="back" data-iconpos="left">Back</a>
-        <h1></h1>
-        <a href="index.html" data-icon="refresh">Refresh</a>
-    </div>
+<div data-role="page" id="calendar" data-add-back-btn="true">
+    <div data-role="header"><h1></h1></div>
     <div data-role="content"></div>
 </div>
 
-<div data-role="page" id="rssIndex">
-    <div data-role="header" >
-        <a href="" data-icon="arrow-l" data-rel="back" data-iconpos="left">Back</a>
-        <h1></h1>
-        <a href="index.html" data-icon="refresh">Refresh</a>
-    </div>
+<div data-role="page" id="rssIndex" data-add-back-btn="true">
+    <div data-role="header"><h1></h1></div>
     <div data-role="content"></div>
 </div>
 
-<div data-role="page" id="rssDetails"  data-add-back-btn="true">
-    <div data-role="header" data-rel="back"><h1></h1></div>
+<div data-role="page" id="rssDetails" data-add-back-btn="true">
+    <div data-role="header"><h1></h1></div>
     <div data-role="content"></div>
 </div>
 
-<div data-role="page" id="trailStatus">
-    <div data-role="header" >
-        <a href="" data-icon="arrow-l" data-rel="back" data-iconpos="left">Back</a>
-        <h1></h1>
-        <a href="index.html" data-icon="refresh" >Refresh</a>
-    </div>
+<div data-role="page" id="trailStatus" data-add-back-btn="true">
+    <div data-role="header"><h1></h1></div>
     <div data-role="content"></div>
 </div>
 
-<div data-role="page" id="mailList"  data-add-back-btn="true">
-    <div data-role="header" data-rel="back"><h1>Mail List</h1></div>
+<div data-role="page" id="mailList" data-add-back-btn="true">
+    <div data-role="header"><h1>Mail List</h1></div>
     <div data-role="content">
         <p>RAMBO-Announce is a low-volume email list used to announce festivals, skills clinics, bike demos, work parties, races, camping trips, night rides, group rides, etc.</p>
         <p>Join by submitting your email address below -or- by visiting the Google Group at <a href="http://groups.google.com/group/rambo-announce/about" target="_blank">http://groups.google.com/group/rambo-announce/about</a></p>
