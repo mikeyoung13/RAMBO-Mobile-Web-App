@@ -6,8 +6,15 @@
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/site.css">
     <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-    <script src="assets/js/site.js"></script>
+    <script type="text/javascript">
+        $(document).bind("mobileinit", function(){
+            // TODO: possibly remove click delay when in PhoneGap
+            //$.mobile.buttonMarkup.hoverDelay = 0;
+            //$.mobile.defaultPageTransition = 'slide';
+        });
+    </script>
     <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+    <script src="assets/js/site.js"></script>
     <script src="assets/js/handlebars-1.0.0.beta.6.js"></script>
 
 
