@@ -92,9 +92,13 @@ function generateEventFormattedDates(events) {
     }
 }
 
-$(document).ready(function() {
+function fetchData(){
+    getRssFeed();
+    getGoogleCal();
+    getTwitter();
+}
 
-    //console.log("doc ready event!!!");
+$(document).ready(function() {
 
     // show spinner during AJAX requests
     jQuery.ajaxSetup({
@@ -111,18 +115,13 @@ $(document).ready(function() {
     });
 
     // get Data
-    if (twitterData === null) {
-        //alert("loading twitter data!");
-        getTwitter();
-    }
-    if (calendarData === null) {
-        //alert("loading twitter data!");
-        getGoogleCal();
-    }
-    if (rssFeedData === null) {
-        //alert("loading twitter data!");
-        getRssFeed();
-    }
+    fetchData();
+
+    // refresh button/link
+    $('#refresh').bind("click", function() {
+        fetchData();
+        return false;
+    });
 
     // compile templates
     twitterTemplate = Handlebars.compile($("#twitter-result-template").html());
@@ -136,9 +135,6 @@ $(document).ready(function() {
         var now =  (new Date()).getTime();
         return getTweetTime(now, dateMS);
     });
-
-
-
 
 });
 
