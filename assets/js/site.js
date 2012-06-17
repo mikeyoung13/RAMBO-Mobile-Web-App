@@ -118,7 +118,7 @@ $(document).ready(function() {
     fetchData();
 
     // refresh button/link
-    $('#refresh').bind("click", function() {
+    $('#refresh').bind("vclick", function() {
         fetchData();
         return false;
     });
