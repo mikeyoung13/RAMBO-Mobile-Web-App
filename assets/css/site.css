@@ -16,3 +16,12 @@
     white-space: normal;
     margin: 0;
 }
+
+#lastRefresh {
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
+#mainMenu {
+    margin-top: 0px;
+}

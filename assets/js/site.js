@@ -93,6 +93,10 @@ function generateEventFormattedDates(events) {
 }
 
 function fetchData(){
+    twitterData = null;
+    calendarData = null;
+    rssFeedData= null;
+    $('#lastRefreshDT').html("In progress...");
     getRssFeed();
     getGoogleCal();
     getTwitter();
@@ -103,13 +107,13 @@ $(document).ready(function() {
     // show spinner during AJAX requests
     jQuery.ajaxSetup({
         beforeSend: function() {
-            //console.log("before send");
             $.mobile.showPageLoadingMsg();
         },
         complete: function(){
-            //console.log("complete");
             if (twitterData && calendarData && rssFeedData) {
                 $.mobile.hidePageLoadingMsg();
+                var currentDate = new Date();
+                $('#lastRefreshDT').html(getFormattedDate(currentDate)+", "+getFormattedTime(currentDate));
             }
         }
     });
