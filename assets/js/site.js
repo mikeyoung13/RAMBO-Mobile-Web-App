@@ -113,7 +113,7 @@ $(document).ready(function() {
             if (twitterData && calendarData && rssFeedData) {
                 $.mobile.hidePageLoadingMsg();
                 var currentDate = new Date();
-                $('#lastRefreshDT').html(getFormattedDate(currentDate)+", "+getFormattedTime(currentDate));
+                $('#lastRefreshDT').html(getFormattedDate(currentDate)+" @ "+getFormattedTime(currentDate));
             }
         }
     });
@@ -253,7 +253,8 @@ function getRssFeed() {
 
             trailStatusData = json.query.results.results[1].entry;
             if (trailStatusData) {
-                trailStatusData.updatedDate =  getFormattedDate(new Date(Date.parse(trailStatusData.updated)));
+                var rawDate = new Date(Date.parse(trailStatusData.updated));
+                trailStatusData.updatedDate =  getFormattedDate(rawDate) + " @ " + getFormattedTime(rawDate);
             } else {
                 // default if not found
                 trailStatusData.title = "No recent updates.  The trails are probably open!";
