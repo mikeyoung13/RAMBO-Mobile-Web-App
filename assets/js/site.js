@@ -93,13 +93,17 @@ function generateEventFormattedDates(events) {
 }
 
 function fetchData(){
-    twitterData = null;
-    calendarData = null;
-    rssFeedData= null;
-    $('#lastRefreshDT').html("In progress...");
-    getRssFeed();
-    getGoogleCal();
-    getTwitter();
+
+    $('#lastUpdateDT').html("Updating...");
+    $.when(getRssFeedAsync(), getGoogleCalAsync(), getTwitterAsync())
+        .then (function(){
+            $.mobile.hidePageLoadingMsg();
+            var currentDate = new Date();
+            $('#lastUpdateDT').html(getFormattedDate(currentDate)+" @ "+getFormattedTime(currentDate));
+        })
+        .fail (function(){
+            alert('One or more requests failed.' );
+        });
 }
 
 $(document).ready(function() {
@@ -108,13 +112,6 @@ $(document).ready(function() {
     jQuery.ajaxSetup({
         beforeSend: function() {
             $.mobile.showPageLoadingMsg();
-        },
-        complete: function(){
-            if (twitterData && calendarData && rssFeedData) {
-                $.mobile.hidePageLoadingMsg();
-                var currentDate = new Date();
-                $('#lastRefreshDT').html(getFormattedDate(currentDate)+" @ "+getFormattedTime(currentDate));
-            }
         }
     });
 
@@ -182,9 +179,9 @@ $(document).bind( "pagebeforechange", function( e, data ) {
     }
 });
 
-function getTwitter() {
+function getTwitterAsync() {
 
-    $.ajax({
+    return $.ajax({
         url: 'https://api.twitter.com/1/statuses/user_timeline.json',
         data: {
             user_id: 263189907,
@@ -219,12 +216,12 @@ function getTwitter() {
     });
 }
 
-function getRssFeed() {
+function getRssFeedAsync() {
 
     var query1 = 'select id, title.content, updated, summary.content, content.content from atom where url="http://www.rambo-mtb.org/?feed=atom" and category.term not in ("Trails Status")';
     var query2 = 'select id, title.content, updated, summary.content, content.content from atom where url="http://www.rambo-mtb.org/?feed=atom" and category.term = "Trails Status"';
 
-    $.ajax({
+    return $.ajax({
         url:'http://query.yahooapis.com/v1/public/yql',
         data:{
             q:"select * from yql.query.multi where queries='"+query1+";"+query2+"'",
@@ -273,13 +270,14 @@ function getRssFeed() {
             alert('Sorry, there was a problem getting Website News and Trail Status');
         }
     });
+
 }
 
-function getGoogleCal() {
+function getGoogleCalAsync() {
 
     var now = (new Date()).toISOString();
 
-    $.ajax({
+    return $.ajax({
         url: 'https://www.googleapis.com/calendar/v3/calendars/96msjdsgp3tcs3jv8kegvd9rhc@group.calendar.google.com/events',
 
         data: {
