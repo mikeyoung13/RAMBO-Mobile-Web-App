@@ -61,9 +61,11 @@
     </script>
 
     <script id="rss-detail-template" type="text/x-handlebars-template">
-        <h3>{{{feedItem.title}}}</h3>
-        <div class="rssDetailContent">{{{feedItem.content}}}</div>
-        <p>Last Update: {{feedItem.updatedDate}}</p>
+        <div>
+            <h3>{{{feedItem.title}}}</h3>
+            <div class='rssDetailContent'>{{{feedItem.content}}}</div>
+            <p>Last Update: {{feedItem.updatedDate}}</p>
+        </div>
     </script>
 
     <script id="trail-status-template" type="text/x-handlebars-template">

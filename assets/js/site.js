@@ -386,17 +386,24 @@ function showRSSDetails( urlObj, options )
     var $page = $( pageSelector ),
         $header = $page.children( ":jqmData(role=header)" ),
         $content = $page.children( ":jqmData(role=content)" ),
-        markup = rssDetailTemplate({feedItem:rssFeedData[feedNum]});
+        rssText = rssDetailTemplate({feedItem:rssFeedData[feedNum]});
+
     $header.find( "h1" ).html( "Details" );
-    $content.html( markup );
+
+    // hide img tag by renaming it before passing to jQuery to prevent jQuery
+    // from evaluating it (full size image was showing up in network trace -- not quite sure why)
+    var $markup = $(rssText.replace(/<img/gi,'<imgtemp'));
 
     // resize images to match mobile device using src.sencha.io service
-    $('div.rssDetailContent img').each(function() {
+    $markup.find('imgtemp').each(function() {
         var image = $(this);
         image.attr('src','http://src.sencha.io/-30/'+image.attr('src'));
         image.removeAttr('width');
         image.removeAttr('height');
     });
+
+    var newMarkupText = $markup.html().replace(/<imgtemp/gi,'<img');
+    $content.html(newMarkupText);
 
     processJQMListView($page, $content, options, urlObj);
 
