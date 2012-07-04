@@ -102,7 +102,7 @@ function fetchData(){
 //            $('#lastUpdateDT').html(getFormattedDate(currentDate)+" @ "+getFormattedTime(currentDate));
 //        })
         .fail (function(){
-            alert('One or more network requests failed.  '+TRY_AGAIN_MSG );
+            console.log('One or more network requests failed.  '+TRY_AGAIN_MSG );
         })
         .always(function(){
             $.mobile.hidePageLoadingMsg();
@@ -252,7 +252,7 @@ function getTwitterAsync() {
         error:function (jqXHR, textStatus, errorThrown) {
             console.log("Twitter API error: "+textStatus);
             twitterData =  ERROR_FLAG;
-            alert('Sorry, there was a problem retrieving Twitter info');
+            alert('Sorry, there was a problem retrieving Twitter info.  '+TRY_AGAIN_MSG);
         }
     });
 }
@@ -310,7 +310,7 @@ function getRssFeedAsync() {
             trailStatusData = {};
             trailStatusData.title = ERROR_MSG_NO_DATA;
             trailStatusData.updatedDate = "N/A";
-            alert('Sorry, there was a problem retrieving Website News and Trail Status');
+            alert('Sorry, there was a problem retrieving Website News and Trail Status.  '+TRY_AGAIN_MSG);
         }
     });
 
@@ -344,7 +344,7 @@ function getGoogleCalAsync() {
         error:function (jqXHR, textStatus, errorThrown) {
             console.log("Google Calendar API error: "+textStatus);
             calendarData =  ERROR_FLAG;
-            alert('Sorry, there was a problem retrieving Google Calendar events');
+            alert('Sorry, there was a problem retrieving Google Calendar events.  '+TRY_AGAIN_MSG);
         }
     });
 }
