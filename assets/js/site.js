@@ -4,8 +4,8 @@ var twitterData = null,
     trailStatusData = null;
 
 var ERROR_FLAG = "error",
-    ERROR_MSG_TRY_AGAIN = "Please try again later by pressing 'Update' button.",
-    ERROR_MSG_NO_DATA = "Data unavailable. "+ERROR_MSG_TRY_AGAIN;
+    TRY_AGAIN_MSG = "Please try again later by pressing 'Update' button.",
+    ERROR_MSG_NO_DATA = "Data unavailable. "+TRY_AGAIN_MSG;
 
 var twitterTemplate = null,
     calendarTemplate = null,
@@ -102,7 +102,7 @@ function fetchData(){
 //            $('#lastUpdateDT').html(getFormattedDate(currentDate)+" @ "+getFormattedTime(currentDate));
 //        })
         .fail (function(){
-            alert('One or more network requests failed.  '+ERROR_MSG_TRY_AGAIN );
+            alert('One or more network requests failed.  '+TRY_AGAIN_MSG );
         })
         .always(function(){
             $.mobile.hidePageLoadingMsg();
@@ -111,6 +111,14 @@ function fetchData(){
         });
 }
 
+function checkNetworkState(networkState) {
+    if (networkState == Connection.NONE || networkState == Connection.UNKNOWN) {
+        alert("No network connection detected.  " + TRY_AGAIN_MSG)
+    } else {
+        $('#tempNetworkType').html("Connection type: " + networkState);
+        fetchData();
+    }
+}
 $(document).ready(function() {
 
     // show spinner during AJAX requests
@@ -120,21 +128,20 @@ $(document).ready(function() {
         }
     });
 
-    document.addEventListener("deviceready", function() {
-        alert("device is ready - traditional)");
-    }, false);
-
     $(document).bind("deviceready", function() {
-        alert("device is ready - jquery)");
-        navigator.notification.alert("Custom alert", "Custom title", "Yup!");
+        //alert("device is ready - jquery)");
+        var networkState = navigator.network.connection.type;
+        checkNetworkState(networkState);
     });
-
-    // get Data
-    fetchData();
 
     // refresh button/link
     $('#refresh').bind("vclick", function() {
-        fetchData();
+        if (navigator.network) {
+            var networkState = navigator.network.connection.type;
+            checkNetworkState(networkState);
+        } else {
+            fetchData();
+        }
         return false;
     });
 
