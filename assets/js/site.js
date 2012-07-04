@@ -4,7 +4,8 @@ var twitterData = null,
     trailStatusData = null;
 
 var ERROR_FLAG = "error",
-    ERROR_MSG = "Data unavailable - please tray again later";
+    ERROR_MSG_TRY_AGAIN = "Please try again later by pressing 'Update' button.",
+    ERROR_MSG_NO_DATA = "Data unavailable. "+ERROR_MSG_TRY_AGAIN;
 
 var twitterTemplate = null,
     calendarTemplate = null,
@@ -96,13 +97,17 @@ function fetchData(){
 
     $('#lastUpdateDT').html("Updating...");
     $.when(getRssFeedAsync(), getGoogleCalAsync(), getTwitterAsync())
-        .then (function(){
+//        .then (function(){
+//            var currentDate = new Date();
+//            $('#lastUpdateDT').html(getFormattedDate(currentDate)+" @ "+getFormattedTime(currentDate));
+//        })
+        .fail (function(){
+            alert('One or more network requests failed.  '+ERROR_MSG_TRY_AGAIN );
+        })
+        .always(function(){
             $.mobile.hidePageLoadingMsg();
             var currentDate = new Date();
             $('#lastUpdateDT').html(getFormattedDate(currentDate)+" @ "+getFormattedTime(currentDate));
-        })
-        .fail (function(){
-            alert('One or more requests failed.' );
         });
 }
 
@@ -113,6 +118,15 @@ $(document).ready(function() {
         beforeSend: function() {
             $.mobile.showPageLoadingMsg();
         }
+    });
+
+    document.addEventListener("deviceready", function() {
+        alert("device is ready - traditional)");
+    }, false);
+
+    $(document).bind("deviceready", function() {
+        alert("device is ready - jquery)");
+        navigator.notification.alert("Custom alert", "Custom title", "Yup!");
     });
 
     // get Data
@@ -208,6 +222,7 @@ function getTwitterAsync() {
             trim_user: 1
         },
         type: 'GET',
+        timeout: 2000,
         dataType: 'jsonp',
 
         success: function(json) {
@@ -227,9 +242,10 @@ function getTwitterAsync() {
 
         },
 
-        error: function(xhr, status) {
+        error:function (jqXHR, textStatus, errorThrown) {
+            console.log("Twitter API error: "+textStatus);
             twitterData =  ERROR_FLAG;
-            alert('Sorry, there was a problem getting Twitter data');
+            alert('Sorry, there was a problem retrieving Twitter info');
         }
     });
 }
@@ -248,6 +264,7 @@ function getRssFeedAsync() {
         type:'GET',
         dataType:'jsonp',
         jsonp:'callback',
+        timeout: 2000,
         jsonpCallback:'cbfunc',
 
         success:function (json) {
@@ -280,12 +297,13 @@ function getRssFeedAsync() {
 
         },
 
-        error:function (xhr, status) {
+        error:function (jqXHR, textStatus, errorThrown) {
+            console.log("Yahoo API error: "+textStatus);
             rssFeedData = ERROR_FLAG;
             trailStatusData = {};
-            trailStatusData.title = ERROR_MSG;
+            trailStatusData.title = ERROR_MSG_NO_DATA;
             trailStatusData.updatedDate = "N/A";
-            alert('Sorry, there was a problem getting Website News and Trail Status');
+            alert('Sorry, there was a problem retrieving Website News and Trail Status');
         }
     });
 
@@ -307,6 +325,7 @@ function getGoogleCalAsync() {
         },
 
         type: 'GET',
+        timeout: 2000,
         dataType: 'jsonp',
         success: function(json) {
             console.log("done getting Google Calendar data");
@@ -315,9 +334,10 @@ function getGoogleCalAsync() {
             //console.log(JSON.stringify(json, null, '  '));
         },
 
-        error: function(xhr, status) {
+        error:function (jqXHR, textStatus, errorThrown) {
+            console.log("Google Calendar API error: "+textStatus);
             calendarData =  ERROR_FLAG;
-            alert('Sorry, there was a problem getting Google Calendar data');
+            alert('Sorry, there was a problem retrieving Google Calendar events');
         }
     });
 }
@@ -363,7 +383,7 @@ function showTwitter( urlObj, options )
     if (twitterData !== ERROR_FLAG) {
         $content.html( markup );
     } else {
-        $content.html(ERROR_MSG);
+        $content.html(ERROR_MSG_NO_DATA);
     }
     processJQMListView($page, $content, options, urlObj);
 
@@ -383,7 +403,7 @@ function showRSS( urlObj, options )
     if (rssFeedData !== ERROR_FLAG) {
         $content.html( markup );
     } else {
-        $content.html(ERROR_MSG);
+        $content.html(ERROR_MSG_NO_DATA);
     }
 
     // remove images
@@ -456,7 +476,7 @@ function showCalendar( urlObj, options )
     if (calendarData !== ERROR_FLAG) {
         $content.html( markup );
     } else {
-        $content.html(ERROR_MSG);
+        $content.html(ERROR_MSG_NO_DATA);
     }
 
     processJQMListView($page, $content, options, urlObj);
