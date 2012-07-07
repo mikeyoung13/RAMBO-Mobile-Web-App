@@ -154,7 +154,7 @@ $(document).ready(function() {
             e.preventDefault();
             return false;
         }
-        if (confirm("Your browser will now be opened and your email will passed to Google Groups.  Please follow confirmation instructions given by Google.")) {
+        if (confirm("Your browser will be opened and your email will be passed to Google Groups.  Please follow confirmation instructions given by Google.")) {
             $(this).attr('href','http://groups.google.com/group/rambo-announce/boxsubscribe?email='+encodeURIComponent(email));
             return true;
         } else {
