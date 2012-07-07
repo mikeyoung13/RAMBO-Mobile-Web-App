@@ -135,7 +135,7 @@ $(document).ready(function() {
     });
 
     // refresh button/link
-    $('#refresh').bind("click", function() {
+    $('#refresh').bind("vclick", function() {
         if (navigator.network) {
             var networkState = navigator.network.connection.type;
             checkNetworkState(networkState);
