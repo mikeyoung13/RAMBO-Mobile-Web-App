@@ -5,7 +5,8 @@ var twitterData = null,
 
 var ERROR_FLAG = "error",
     TRY_AGAIN_MSG = "Please try again later by pressing 'Update' button.",
-    ERROR_MSG_NO_DATA = "Data unavailable. "+TRY_AGAIN_MSG;
+    ERROR_MSG_NO_DATA = "Data unavailable. "+TRY_AGAIN_MSG,
+    TIMEOUT = 8000;
 
 var twitterTemplate = null,
     calendarTemplate = null,
@@ -96,13 +97,13 @@ function generateEventFormattedDates(events) {
 function fetchData(){
 
     $('#lastUpdateDT').html("Updating...");
-    $.when(getRssFeedAsync(), getGoogleCalAsync(), getTwitterAsync())
+    $.when(callYQLAsync(), callGoogleCalAsync(), callTwitterAsync())
 //        .then (function(){
 //            var currentDate = new Date();
 //            $('#lastUpdateDT').html(getFormattedDate(currentDate)+" @ "+getFormattedTime(currentDate));
 //        })
         .fail (function(){
-            console.log('One or more network requests failed.  '+TRY_AGAIN_MSG );
+            alert('One or more network requests failed.  '+TRY_AGAIN_MSG );
         })
         .always(function(){
             $.mobile.hidePageLoadingMsg();
@@ -112,10 +113,9 @@ function fetchData(){
 }
 
 function checkNetworkState(networkState) {
-    if (networkState == Connection.NONE || networkState == Connection.UNKNOWN) {
-        alert("No network connection detected.  " + TRY_AGAIN_MSG)
+    if (networkState == Connection.NONE) {
+        alert("Network is unavailable.  " + TRY_AGAIN_MSG)
     } else {
-        $('#tempNetworkType').html("Connection type: " + networkState);
         fetchData();
     }
 }
@@ -218,7 +218,7 @@ $(document).bind( "pagebeforechange", function( e, data ) {
     }
 });
 
-function getTwitterAsync() {
+function callTwitterAsync() {
 
     return $.ajax({
         url: 'https://api.twitter.com/1/statuses/user_timeline.json',
@@ -229,7 +229,7 @@ function getTwitterAsync() {
             trim_user: 1
         },
         type: 'GET',
-        timeout: 2000,
+        timeout: TIMEOUT,
         dataType: 'jsonp',
 
         success: function(json) {
@@ -252,12 +252,12 @@ function getTwitterAsync() {
         error:function (jqXHR, textStatus, errorThrown) {
             console.log("Twitter API error: "+textStatus);
             twitterData =  ERROR_FLAG;
-            alert('Sorry, there was a problem retrieving Twitter info.  '+TRY_AGAIN_MSG);
+            //alert('Sorry, there was a problem retrieving Twitter info.  '+TRY_AGAIN_MSG);
         }
     });
 }
 
-function getRssFeedAsync() {
+function callYQLAsync() {
 
     var query1 = 'select id, title.content, updated, summary.content, content.content from atom where url="http://www.rambo-mtb.org/?feed=atom" and category.term not in ("Trails Status")';
     var query2 = 'select id, title.content, updated, summary.content, content.content from atom where url="http://www.rambo-mtb.org/?feed=atom" and category.term = "Trails Status"';
@@ -271,7 +271,7 @@ function getRssFeedAsync() {
         type:'GET',
         dataType:'jsonp',
         jsonp:'callback',
-        timeout: 2000,
+        timeout: TIMEOUT,
         jsonpCallback:'cbfunc',
 
         success:function (json) {
@@ -310,13 +310,13 @@ function getRssFeedAsync() {
             trailStatusData = {};
             trailStatusData.title = ERROR_MSG_NO_DATA;
             trailStatusData.updatedDate = "N/A";
-            alert('Sorry, there was a problem retrieving Website News and Trail Status.  '+TRY_AGAIN_MSG);
+            //alert('Sorry, there was a problem retrieving Website News and Trail Status.  '+TRY_AGAIN_MSG);
         }
     });
 
 }
 
-function getGoogleCalAsync() {
+function callGoogleCalAsync() {
 
     var now = (new Date()).toISOString();
 
@@ -332,7 +332,7 @@ function getGoogleCalAsync() {
         },
 
         type: 'GET',
-        timeout: 2000,
+        timeout: TIMEOUT,
         dataType: 'jsonp',
         success: function(json) {
             console.log("done getting Google Calendar data");
@@ -344,7 +344,7 @@ function getGoogleCalAsync() {
         error:function (jqXHR, textStatus, errorThrown) {
             console.log("Google Calendar API error: "+textStatus);
             calendarData =  ERROR_FLAG;
-            alert('Sorry, there was a problem retrieving Google Calendar events.  '+TRY_AGAIN_MSG);
+            //alert('Sorry, there was a problem retrieving Google Calendar events.  '+TRY_AGAIN_MSG);
         }
     });
 }
