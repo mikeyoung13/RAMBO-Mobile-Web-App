@@ -113,7 +113,7 @@ function fetchData(){
 }
 
 function checkNetworkState(networkState) {
-    if (networkState == Connection.NONE) {
+    if (networkState == Connection.NONE || networkState == Connection.UNKNOWN) {
         alert("Network is unavailable.  " + TRY_AGAIN_MSG)
     } else {
         fetchData();
