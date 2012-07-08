@@ -6,7 +6,7 @@ var twitterData = null,
 var ERROR_FLAG = "error",
     TRY_AGAIN_MSG = "Please try again later by pressing 'Update' button.",
     ERROR_MSG_NO_DATA = "Data unavailable. "+TRY_AGAIN_MSG,
-    TIMEOUT = 8000;
+    TIMEOUT = 12000;
 
 var twitterTemplate = null,
     calendarTemplate = null,
