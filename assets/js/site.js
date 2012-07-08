@@ -75,18 +75,27 @@ function getTweetTime(now, oldDate) {
 }
 
 function generateEventFormattedDates(events) {
+    var startDT, endDT,  startDate, startTime, endTime;
     for (var i = 0; i < events.length; i++) {
         var event = events[i];
         if (event.start.date) {
             // Safari and js-iso8601 require the full date
-            event.formattedDate = getFormattedDate(new Date(Date.parse(event.start.date +"T00:00:00-04:00")));
+            // add 1:01 to account for daylight savings time
+            startDT = getFormattedDate(new Date(Date.parse(event.start.date +"T00:00:00-05:01")));
+            // subtract 1:01 to account for daylight savings time and to prevent spillover into midnight of next day for all-day events
+            endDT =  getFormattedDate(new Date(Date.parse(event.end.date +"T00:00:00-02:59")));
+            if (startDT === endDT) {
+                event.formattedDate = startDT;
+            } else {
+                event.formattedDate = startDT + ' - ' + endDT;
+            }
         } else if (event.start.dateTime) {
-            var startDT = new Date(Date.parse(event.start.dateTime));
-            var endDT = new Date(Date.parse(event.end.dateTime));
+            startDT = new Date(Date.parse(event.start.dateTime));
+            endDT = new Date(Date.parse(event.end.dateTime));
 
-            var startDate = getFormattedDate(startDT);
-            var startTime = getFormattedTime(startDT);
-            var endTime = getFormattedTime(endDT);
+            startDate = getFormattedDate(startDT);
+            startTime = getFormattedTime(startDT);
+            endTime = getFormattedTime(endDT);
 
             event.formattedDate = startDate + ", " + startTime + " - " + endTime;
 
@@ -324,7 +333,7 @@ function callGoogleCalAsync() {
         url: 'https://www.googleapis.com/calendar/v3/calendars/96msjdsgp3tcs3jv8kegvd9rhc@group.calendar.google.com/events',
 
         data: {
-            fields: "items(description, end, location, start, summary)",
+            //fields: "items(description, end, location, start, summary, timeZone)",
             singleEvents: true,
             timeMin: now,
             key: "AIzaSyAZEASvv4Go1qssuljASB76T1HQPg_GgW8",
