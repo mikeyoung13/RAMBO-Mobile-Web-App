@@ -448,16 +448,6 @@ function showRSSDetails( urlObj, options )
     // from evaluating it (full size image was showing up in network trace -- not quite sure why)
     var $markup = $(rssText.replace(/<img/gi,'<imgtemp'));
 
-    //
-    $markup.find('.rssDetailContent a').each(function() {
-        var $link = $(this);
-        var href = $link.attr('href');
-        if (href.indexOf('http://www.rambo-mtb.org') === 0) {
-            $link.attr('target','_blank');
-            $link.attr('rel','external');
-        }
-    });
-
     // resize images to match mobile device using src.sencha.io service
     $markup.find('imgtemp').each(function() {
         var image = $(this);
@@ -468,6 +458,21 @@ function showRSSDetails( urlObj, options )
 
     var newMarkupText = $markup.html().replace(/<imgtemp/gi,'<img');
     $content.html(newMarkupText);
+
+    // modify certain kinds of links
+    $content.find('.rssDetailContent a').each(function() {
+        var $link = $(this);
+        var href = $link.attr('href');
+        if ($link.find('img').length > 0 && href.indexOf('http://www.rambo-mtb.org') === 0) {
+            // disable links to RAMBO-hosted images
+            $link.removeAttr('href');
+        } else if (href.indexOf('http://www.rambo-mtb.org') === 0) {
+            // force RAMBO website links to open in new browser
+            // add more websites in future (such as partner bike shops)
+            $link.attr('target','_blank');
+            $link.attr('rel','external');
+        }
+    });
 
     //  Email link to article
     $('#rssDetailEmail').bind("click", function(e) {
