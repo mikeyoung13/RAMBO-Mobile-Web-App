@@ -450,6 +450,18 @@ function showRSSDetails( urlObj, options )
     var newMarkupText = $markup.html().replace(/<imgtemp/gi,'<img');
     $content.html(newMarkupText);
 
+    //  Email link to article
+    $('#rssDetailEmail').bind("click", function(e) {
+        var $link = $(this);
+        var subject = $link.attr('data-subject');
+        var url = $link.attr('data-url');
+        $(this).attr('href','mailto:?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(url));
+        return true;
+    });
+
+    // enhance buttons w/ jQuery Mobile style
+    $('#rssDetailButtons').trigger('create');
+
     processJQMListView($page, $content, options, urlObj);
 
 
