@@ -1,0 +1,33 @@
+{ "markers":[
+    {
+        "desc":"Big Creek Pump Track",
+        "lat":34.029936,
+        "long":-84.311893
+    },
+    {
+        "desc":"Big Creek Trail",
+        "lat":34.024058,
+        "long":-84.312258
+    },
+    {
+        "desc":"Mt. Adams Trail",
+        "lat":34.075199,
+        "long":-84.250272
+    },
+    {
+        "desc":"Big Creek Freeride Area",
+        "lat":34.033168,
+        "long":-84.305858
+    },
+    {
+        "desc":"Central Park Trail",
+        "lat":34.243604,
+        "long":-84.104322
+    },
+    {
+        "desc":"Charleston Park (Future)",
+        "lat":34.243577,
+        "long":-84.047341
+    }
+]
+}

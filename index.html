@@ -19,6 +19,11 @@
     <script src="assets/js/site.js?ver=1"></script>
     <script src="assets/js/handlebars-1.0.0.beta.6.js"></script>
 
+    <style type="text/css">
+        html { height: 100% }
+        body { height: 100%; margin: 0; padding: 0 }
+        #map_canvas { height: 100% }
+    </style>
 
     <script id="twitter-result-template" type="text/x-handlebars-template">
         <ul data-role='listview' data-inset='true' data-filter='true'>
@@ -109,6 +114,7 @@
             <li><a href="#calendar">Calendar</a></li>
             <li><a href="#twitter">Twitter Feed</a></li>
             <li><a href="#trailStatus">Trail Status</a></li>
+            <li><a href="#locations">Trail Locations</a></li>
             <li><a href="#mailList">Mail List</a></li>
             <li><a href="#contactUs">Contact Us</a></li>
         </ul>
@@ -139,6 +145,13 @@
 <div data-role="page" id="trailStatus" data-add-back-btn="true">
     <div data-role="header"><h1></h1></div>
     <div data-role="content"></div>
+</div>
+
+<div data-role="page" id="locations" data-add-back-btn="true" style="width:100%; height:100%">
+    <div data-role="header" data-position="fixed"><h1>Trail Locations</h1></div>
+    <div data-role="content" style="width:100%; height:100%; padding:0;">
+        <div data-role="content" id="map_canvas" style="position:absolute; width:100%; height:100%;"></div>
+    </div>
 </div>
 
 <div data-role="page" id="mailList" data-add-back-btn="true">

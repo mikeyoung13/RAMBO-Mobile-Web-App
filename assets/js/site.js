@@ -14,6 +14,8 @@ var twitterTemplate = null,
     rssDetailTemplate = null,
     trailStatusTemplate = null;
 
+var mapsAPILoaded = false;
+
 //twitterData = [{"created_at":"Sat May 26 00:01:01 +0000 2012","text":"Good MTB weather people!1"},{"created_at":"Fri May 25 00:01:01 +0000 2012","text":"Good MTB weather people!2"},{"created_at":"Sun May 6 07:30:28 +0000 2012","text":"Good MTB weather people!3"}];
 
 // ISO date parser downloaded 5/26/2012
@@ -128,7 +130,132 @@ function checkNetworkState(networkState) {
         fetchData();
     }
 }
+
+function loadMaps() {
+
+    var currentLoc;
+
+    var mapOptions = {
+        center: new google.maps.LatLng(34.029936,-84.311893),
+        zoom: 12,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControlOptions: {
+            position: google.maps.ControlPosition.TOP_CENTER
+        }
+    };
+    var map = new google.maps.Map(document.getElementById("map_canvas"),
+        mapOptions);
+
+    var southWest = new google.maps.LatLng(34.024058,-84.312258);
+    var northEast = new google.maps.LatLng(34.243577,-84.047341);
+    var bounds = new google.maps.LatLngBounds(southWest,northEast);
+    map.fitBounds(bounds);
+
+    var infoWindow = new google.maps.InfoWindow();
+
+    var markerList = new Array();
+
+    function showMarker(markerId){
+
+        // get marker information from marker list
+        var marker = markerList[markerId];
+
+        // get marker detail information from server
+
+        var content = marker.title + '<p><a href="http://maps.google.com/maps?saddr='+currentLoc.toUrlValue()+'&daddr='+marker.position.toUrlValue()+'" target="_blank">Get Directions</a></p>';
+        infoWindow.setContent(content);
+        infoWindow.open(map, marker);
+    }
+
+    function loadMarker(markerData){
+
+        // create new marker location
+        var myLatlng = new google.maps.LatLng(markerData['lat'],markerData['long']);
+
+        // create new marker
+        var marker = new google.maps.Marker({
+            id: markerData.id,
+            map: map,
+            title: markerData['desc'],
+            position: myLatlng,
+            icon: "assets/images/bike_downhill.png"
+        });
+
+        // add marker to list used later to get content and additional marker information
+        markerList[markerData.id] = marker;
+
+        // add event listener when marker is clicked
+        // currently the marker data contain a dataurl field this can of course be done different
+        google.maps.event.addListener(marker, 'click', function() {
+
+            // show marker when clicked
+            showMarker(marker.id);
+
+        });
+
+    }
+
+    function loadMarkers(){
+        $.ajax({
+            url: 'assets/data/trailMarkers.json',
+            type: 'GET',
+            dataType: 'json',
+            beforeSend: function(){
+                // no-op
+            },
+            success: function(data) {
+                // loop all the markers
+
+                $.each(data.markers, function(i,item){
+                    // add marker to map
+                    item.id = i;
+                    loadMarker(item);
+                });
+
+            }
+        });
+    }
+
+    loadMarkers();
+
+    var onSuccess = function(position) {
+
+        currentLoc = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+        var currentPosMarker = new google.maps.Marker({
+            map: map,
+            position: currentLoc,
+            optimized: false,
+            icon: new google.maps.MarkerImage("assets/images/currentPosition1.png", null, null, null, new google.maps.Size(48, 48))
+        });
+
+    };
+
+    var onError = function(error) {
+        alert('code: '    + error.code    + '\n' +
+            'message: ' + error.message + '\n');
+    }
+
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+}
+
 $(document).ready(function() {
+
+    $('#locations').live("pageshow", function() {
+
+        if (mapsAPILoaded) {
+            loadMaps();
+        } else {
+            // load Google Maps on demand
+            var script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = "http://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAZEASvv4Go1qssuljASB76T1HQPg_GgW8&sensor=false&callback=loadMaps";
+            document.body.appendChild(script);
+            mapsAPILoaded = true;
+        }
+
+
+    });
 
     // show spinner during AJAX requests
     jQuery.ajaxSetup({
@@ -200,7 +327,8 @@ $(document).bind( "pagebeforechange", function( e, data ) {
             rssDetails = /^#rssDetails/,
             trailStatusPath = /^#trailStatus/,
             twitterPath = /^#twitter/,
-            calendarPath = /^#calendar/;
+            calendarPath = /^#calendar/,
+            locationsPath = /^#locations/;
         if ( u.hash.search(rssPath) !== -1 ) {
             // We're being asked to display the items for a specific category.
             // Call our internal method that builds the content for the category
@@ -221,6 +349,9 @@ $(document).bind( "pagebeforechange", function( e, data ) {
             e.preventDefault();
         } else if (u.hash.search(trailStatusPath) !== -1)  {
             showTrailStatus( u, data.options );
+            e.preventDefault();
+        } else if (u.hash.search(locationsPath) !== -1)  {
+            showLocations( u, data.options );
             e.preventDefault();
         }
 
@@ -502,6 +633,20 @@ function showTrailStatus( urlObj, options )
     $header.find( "h1" ).html( "Trail Status" );
     $content.html( markup );
     processJQMListView($page, $content, options, urlObj);
+
+
+}
+
+function showLocations( urlObj, options )
+{
+    var pageSelector = getPageSelectorFromURL(urlObj);
+
+    var $page = $( pageSelector );
+    options.dataUrl = urlObj.href;
+
+    // Now call changePage() and tell it to switch to
+    // the page we just modified.
+    $.mobile.changePage($page, options);
 
 
 }
