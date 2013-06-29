@@ -25,17 +25,6 @@
         #map_canvas { height: 100% }
     </style>
 
-    <script id="twitter-result-template" type="text/x-handlebars-template">
-        <ul data-role='listview' data-inset='true' data-filter='true'>
-            {{#each things}}
-            <li>
-                <p class='ui-li-desc'>{{this.text}}</p>
-                <p class='ui-li-desc'><strong>{{timeAgo this.created_at}}</strong></p>
-            </li>
-            {{/each}}
-        </ul>
-    </script>
-
     <script id="calendar-result-template" type="text/x-handlebars-template">
         <ul data-role='listview' data-inset='true' data-filter='true'>
             {{#each events}}
@@ -112,7 +101,6 @@
         <ul id="mainMenu" data-role="listview" data-inset="true">
             <li><a href="#rssIndex">Website News</a></li>
             <li><a href="#calendar">Calendar</a></li>
-            <li><a href="#twitter">Twitter Feed</a></li>
             <li><a href="#trailStatus">Trail Status</a></li>
             <li><a href="#locations">Trail Locations</a></li>
             <li><a href="#mailList">Mail List</a></li>
@@ -120,11 +108,6 @@
         </ul>
     </div>
 
-</div>
-
-<div data-role="page" id="twitter" data-add-back-btn="true">
-    <div data-role="header" ><h1></h1></div>
-    <div data-role="content"></div>
 </div>
 
 <div data-role="page" id="calendar" data-add-back-btn="true">
